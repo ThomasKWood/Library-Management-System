@@ -85,6 +85,9 @@ public class MainTest {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
 
+        // test func
+        //users.getUser("thomaswood").addBorrowed(new Book("test","test"));
+
         for (User user : users.getUsers()) {
             if (!user.getBorrowed().isEmpty()) {
                 assert false;

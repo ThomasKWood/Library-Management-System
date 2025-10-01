@@ -6,23 +6,28 @@ public class Users {
     protected ArrayList<User> users;
 
     public Users() {
-        //
+        users = new ArrayList<User>();
     }
 
     public void addUser(User user) {
-        //
+        users.add(user);
     }
 
     public User getUser(String usr) {
+        for (User user : users) {
+            if (user.getUsername().equals(usr)) {
+                return user;
+            }
+        }
         return null;
     }
 
     public int getSize() {
-        return 0;
+        return users.size();
     }
 
     public ArrayList<User> getUsers() {
-        return null;
+        return users;
     }
 
 }
