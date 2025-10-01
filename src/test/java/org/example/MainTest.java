@@ -103,8 +103,55 @@ public class MainTest {
     }
 
     @Test
-    @DisplayName("Test Login - Valid")
+    @DisplayName("Test Login - Empty value")
     void RESP_03_test_01() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session(null, users);
+
+        String input = "\n\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        if (output.toString().contains("cannot be blank")) {
+            assert true;
+        } else {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Test prompts for username and password")
+    void RESP_03_test_02() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session(null, users);
+
+        String input = "\n\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        if (output.toString().contains("enter your username") && output.toString().contains("enter your password")) {
+            assert true;
+        } else {
+            assert false;
+        }
+    }
+
+
+    @Test
+    @DisplayName("Test Login - Valid")
+    void RESP_04_test_01() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
 
@@ -127,7 +174,7 @@ public class MainTest {
 
     @Test
     @DisplayName("Test Login - Incorrect username")
-    void RESP_03_test_02() {
+    void RESP_04_test_02() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
 
@@ -147,9 +194,10 @@ public class MainTest {
             assert false;
         }
     }
+
     @Test
     @DisplayName("Test Login - Incorrect password")
-    void RESP_03_test_03() {
+    void RESP_04_test_03() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
 
@@ -171,28 +219,53 @@ public class MainTest {
     }
 
     @Test
-    @DisplayName("Test Login - Empty value")
-    void RESP_03_test_04() {
+    @DisplayName("Test Login - Already logged in")
+    void RESP_04_test_04() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
 
 
         Session session = new Session(null, users);
 
-        String input = "\n\n";
+        String input = "thomaswood\n1234\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
         session.login(new Scanner(srInput), new PrintWriter(output));
 
-        if (output.toString().contains("cannot be blank")) {
+        output = new StringWriter();
+        session.login(new Scanner(srInput), new PrintWriter(output));
+        if (output.toString().contains("already")) {
             assert true;
         } else {
             assert false;
         }
     }
 
-    // add already logged in check
+    @Test
+    @DisplayName("Test retry")
+    void RESP_04_test_04() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session(null, users);
+
+        String input = "thomaswood\n1235\nthomaswood\n1234\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        output = new StringWriter();
+        session.login(new Scanner(srInput), new PrintWriter(output));
+        if (output.toString().contains("incorrect") && output.toString().contains("Welcome")) {
+            assert true;
+        } else {
+            assert false;
+        }
+    }
 
 }
