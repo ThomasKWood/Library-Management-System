@@ -3,7 +3,13 @@ package org.example;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.StringReader;
 import java.util.ArrayList;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Scanner;
 
 public class MainTest {
 
@@ -95,5 +101,94 @@ public class MainTest {
         }
         assert true;
     }
+
+    @Test
+    @DisplayName("Test Login - Valid")
+    void RESP_03_test_01() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session();
+
+        String input = "thomaswood\n1234\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        if (output.toString().contains("Welcome")) {
+            assert true;
+        }
+        assert false;
+    }
+
+    @Test
+    @DisplayName("Test Login - Incorrect username")
+    void RESP_03_test_02() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session();
+
+        String input = "validusername12\n1234\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        if (output.toString().contains("Incorrect username or password")) {
+            assert true;
+        }
+        assert false;
+    }
+    @Test
+    @DisplayName("Test Login - Incorrect password")
+    void RESP_03_test_03() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session();
+
+        String input = "thomaswood\n1235\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        if (output.toString().contains("Incorrect username or password")) {
+            assert true;
+        }
+        assert false;
+    }
+
+    @Test
+    @DisplayName("Test Login - Empty value")
+    void RESP_03_test_04() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session();
+
+        String input = "\n\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        if (output.toString().contains("username or password cannot be blank")) {
+            assert true;
+        }
+        assert false;
+    }
+
+
 
 }
