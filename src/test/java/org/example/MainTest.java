@@ -318,9 +318,58 @@ public class MainTest {
 
         session.login(new Scanner(srInput), new PrintWriter(output));
 
-        input = "Yes";
+        input = "Yes\n";
         srInput = new StringReader(input);
         output = new StringWriter();
+        session.logout(new Scanner(srInput), new PrintWriter(output));
+
+        if (session.signedIn()) {
+            assert false;
+        } else {
+            assert true;
+        }
+    }
+    @Test
+    @DisplayName("Test user decides to cancel logout")
+    void RESP_05_test_04() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session(null, users);
+
+        String input = "thomaswood\n1234\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        input = "No\n";
+        srInput = new StringReader(input);
+        output = new StringWriter();
+        session.logout(new Scanner(srInput), new PrintWriter(output));
+
+        if (session.signedIn()) {
+            assert true;
+        } else {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Test user tries logout before logging in")
+    void RESP_05_test_05() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session(null, users);
+
+        String input = "No\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
         session.logout(new Scanner(srInput), new PrintWriter(output));
 
         if (session.signedIn()) {

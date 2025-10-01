@@ -59,11 +59,25 @@ public class Session {
     }
 
     public boolean signedIn() {
-        return false;
+        return currUser != null;
     }
 
     public void logout(Scanner input, PrintWriter output) {
-        output.println("");
+        output.println("Are you sure you want to sign out? Yes/No");
+        String lineIn;
+        if (input.hasNextLine()) {
+            lineIn = input.nextLine();
+        } else {
+            return;
+        }
+        if (lineIn.contains("Yes")) {
+            currUser = null;
+        } else if (lineIn.contains("No")) {
+            return;
+        } else {
+            output.println("Input not recognized");
+            logout(input, output);
+        }
         output.flush();
     }
 }
