@@ -45,7 +45,52 @@ public class MainTest {
         assert true;
     }
 
-    // test for checking
+    @Test
+    @DisplayName("Check number of users")
+    void RESP_02_test_01() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
 
+        assertEquals(3, users.getSize());
+    }
+
+    @Test
+    @DisplayName("Check username & password validity")
+    void RESP_02_test_02() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        ArrayList<String> usernames = new ArrayList<String>();
+
+        for (User user : users.getUsers()) {
+            if (user.getUsername() == null || !user.passwordValid()) {
+                assert false; // fail if user name is null or password is not valid
+            } else if (usernames.isEmpty()) {
+                usernames.add(user.getUsername());
+            } else {
+                for (String username : usernames) {
+                    if (user.getUsername().equals(username)) {
+                        assert false; // username not unique
+                    }
+                }
+                usernames.add(user.getUsername());
+            }
+        }
+        assert true;
+    }
+
+    @Test
+    @DisplayName("Check borrowed is empty")
+    void RESP_02_test_03() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        for (User user : users.getUsers()) {
+            if (!user.getBorrowed().isEmpty()) {
+                assert false;
+            }
+        }
+        assert true;
+    }
 
 }
