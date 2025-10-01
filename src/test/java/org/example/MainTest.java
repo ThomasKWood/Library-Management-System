@@ -25,27 +25,27 @@ public class MainTest {
         Catalogue catalogue = lib.initLibrary();
 
         ArrayList<String> titles = new ArrayList<String>();
-        for (int i = 0, i<catalogue.getSize(), i++) {
-            if (titles.isEmpty() && catalogue.getSize() != 0) {
-                if (catalogue.getBook(i).getTitle() != null) {
-                    titles.add(catalogue.getBook(0).getTitle());
-                } else {
-                    if (catalogue.getBook(i).getTitle() != null && catalogue.getBook(i).getAuthor() != null) {
-                        //check if in titles
-
-                        if (titles.contains(catalogue.getBook(i).getTitle())) {
-                            // throw error
-                        } else {
-                            titles.add(catalogue.getBook(i).getTitle());
-                        }
+        for (Book book : catalogue.getCatalogue()) {
+            if (book.getTitle() == null || book.getAuthor() == null) {
+                assert false; // null title or null author
+            }
+            if (titles.isEmpty()) {
+                titles.add(book.getTitle());
+            } else {
+                int size = titles.size();
+                for (int i = 0; i < size; i++) {
+                    if (titles.get(i).equals(book.getTitle())) {
+                        assert false; // duplicate title
                     } else {
-                        // send false for being null
+                        titles.add(book.getTitle());
                     }
                 }
             }
         }
+        assert true;
     }
 
+    // test for checking
 
 
 }
