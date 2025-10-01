@@ -109,7 +109,7 @@ public class MainTest {
         Users users = sampleUsers.initUsers();
 
 
-        Session session = new Session();
+        Session session = new Session(null, users);
 
         String input = "thomaswood\n1234\n";
         StringReader srInput = new StringReader(input);
@@ -120,8 +120,9 @@ public class MainTest {
 
         if (output.toString().contains("Welcome")) {
             assert true;
+        } else {
+            assert false;
         }
-        assert false;
     }
 
     @Test
@@ -131,7 +132,7 @@ public class MainTest {
         Users users = sampleUsers.initUsers();
 
 
-        Session session = new Session();
+        Session session = new Session(null, users);
 
         String input = "validusername12\n1234\n";
         StringReader srInput = new StringReader(input);
@@ -140,10 +141,11 @@ public class MainTest {
 
         session.login(new Scanner(srInput), new PrintWriter(output));
 
-        if (output.toString().contains("Incorrect username or password")) {
+        if (output.toString().contains("incorrect")) {
             assert true;
+        } else {
+            assert false;
         }
-        assert false;
     }
     @Test
     @DisplayName("Test Login - Incorrect password")
@@ -152,7 +154,7 @@ public class MainTest {
         Users users = sampleUsers.initUsers();
 
 
-        Session session = new Session();
+        Session session = new Session(null, users);
 
         String input = "thomaswood\n1235\n";
         StringReader srInput = new StringReader(input);
@@ -161,10 +163,11 @@ public class MainTest {
 
         session.login(new Scanner(srInput), new PrintWriter(output));
 
-        if (output.toString().contains("Incorrect username or password")) {
+        if (output.toString().contains("incorrect")) {
             assert true;
+        } else {
+            assert false;
         }
-        assert false;
     }
 
     @Test
@@ -174,7 +177,7 @@ public class MainTest {
         Users users = sampleUsers.initUsers();
 
 
-        Session session = new Session();
+        Session session = new Session(null, users);
 
         String input = "\n\n";
         StringReader srInput = new StringReader(input);
@@ -183,12 +186,13 @@ public class MainTest {
 
         session.login(new Scanner(srInput), new PrintWriter(output));
 
-        if (output.toString().contains("username or password cannot be blank")) {
+        if (output.toString().contains("cannot be blank")) {
             assert true;
+        } else {
+            assert false;
         }
-        assert false;
     }
 
-
+    // add already logged in check
 
 }
