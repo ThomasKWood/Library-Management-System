@@ -61,4 +61,9 @@ public class Session {
     public boolean signedIn() {
         return false;
     }
+
+    public void logout(Scanner input, PrintWriter output) {
+        output.println("");
+        output.flush();
+    }
 }

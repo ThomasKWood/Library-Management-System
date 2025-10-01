@@ -266,4 +266,67 @@ public class MainTest {
         }
     }
 
+    @Test
+    @DisplayName("Test that session is null on initialize")
+    void RESP_05_test_01() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session(null, users);
+
+        if (session.signedIn()) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Test that session is set once logged in")
+    void RESP_05_test_02() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session(null, users);
+
+        String input = "thomaswood\n1234\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        if (session.signedIn()) {
+            assert true;
+        } else {
+            assert false;
+        }
+    }
+    @Test
+    @DisplayName("Test that session is cleared on logout")
+    void RESP_05_test_03() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session(null, users);
+
+        String input = "thomaswood\n1234\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        input = "Yes";
+        srInput = new StringReader(input);
+        output = new StringWriter();
+        session.logout(new Scanner(srInput), new PrintWriter(output));
+
+        if (session.signedIn()) {
+            assert false;
+        } else {
+            assert true;
+        }
+    }
 }
