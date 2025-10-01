@@ -245,7 +245,7 @@ public class MainTest {
 
     @Test
     @DisplayName("Test retry")
-    void RESP_04_test_04() {
+    void RESP_04_test_05() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
 
@@ -259,8 +259,6 @@ public class MainTest {
 
         session.login(new Scanner(srInput), new PrintWriter(output));
 
-        output = new StringWriter();
-        session.login(new Scanner(srInput), new PrintWriter(output));
         if (output.toString().contains("incorrect") && output.toString().contains("Welcome")) {
             assert true;
         } else {

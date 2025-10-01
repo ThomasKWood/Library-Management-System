@@ -20,33 +20,42 @@ public class Session {
         //
         if (currUser == null) {
             output.println("Please enter your username: ");
-            String usr = input.nextLine();
+            String usr;
+            if (input.hasNextLine()) {
+                usr = input.nextLine();
+            } else {
+                return;
+            }
             output.println("Please enter your password: ");
-            String pass = input.nextLine();
+            String pass;
+            if (input.hasNextLine()) {
+                pass = input.nextLine();
+            } else {
+                return;
+            }
 
             if (usr == null || pass == null || usr.equals("") || pass.equals("")) {
                 output.println("Username or password cannot be blank.");
+                login(input, output);
             }
             // good thing this isnt algorithms where time complexity matters
             for (User user : users.getUsers()) {
                 if (user.getUsername().equals(usr)) {
-
                     if (user.passwordCorrect(pass)) {
                         currUser = user;
                         output.println("Welcome " + currUser.getUsername());
-                        output.flush();
-                        return;
                     }
                 }
             }
             // this will also print if the username doesn't exist. technically this is more secure
-            output.println("Username or password incorrect.");
-            output.flush();
+            if (currUser == null) {
+                output.println("Username or password incorrect.");
+                login(input, output);
+            }
         } else {
             output.println("You are already logged in as: " + currUser.getUsername());
-            output.flush();
         }
-        return;
+        output.flush();
     }
 
     public boolean signedIn() {
