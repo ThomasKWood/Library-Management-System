@@ -3,10 +3,12 @@ package org.example;
 public class Book {
     private final String title;
     private final String author;
+    private boolean available;
 
     public Book(String title, String author){
         this.title = title;
         this.author = author;
+        this.available = true;
     }
 
     public String getTitle(){
@@ -18,6 +20,6 @@ public class Book {
     }
 
     public boolean getAvailability() {
-        return false;
+        return available;
     }
 }
