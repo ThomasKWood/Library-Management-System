@@ -51,6 +51,22 @@ public class MainTest {
         assert true;
     }
 
+    // add test to see if book is booked
+    @Test
+    @DisplayName("Check all books are available on initialization")
+    void RESP_01_test_03() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+
+        ArrayList<String> titles = new ArrayList<String>();
+        for (Book book : catalogue.getCatalogue()) {
+            if (!book.getAvailability()) {
+                assert false; // fail if book is not available
+            }
+        }
+
+    }
+
     @Test
     @DisplayName("Check number of users")
     void RESP_02_test_01() {
