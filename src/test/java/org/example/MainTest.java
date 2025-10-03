@@ -626,7 +626,7 @@ public class MainTest {
 
 
     @Test
-    @DisplayName("Borrow Count- no borrowed")
+    @DisplayName("Borrow Count - no borrowed")
     void RESP_08_test_01() {
         InitializeLibrary lib = new InitializeLibrary();
         Catalogue catalogue = lib.initLibrary();

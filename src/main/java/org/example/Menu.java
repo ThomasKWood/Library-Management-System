@@ -7,14 +7,19 @@ public class Menu {
 
     public Menu() {};
     public int mainMenu(Scanner input, PrintWriter output) {
-        output.println("---------------- MAIN MENU ----------------\n1. Borrow\n2. Return\n3.Sign-out");
+        output.println("\n---------------- MAIN MENU ----------------\n1. Borrow\n2. Return\n3.Sign-out");
         int selection = getPick(input, output, 1,3);
         output.flush();
         return selection;
     }
 
     public int borrowMenu(Scanner input, PrintWriter output, User user, Catalogue catalogue) {
-        output.println("");
+        output.println("\n---------------- BORROW ----------------");
+        output.println("\nYou have " + user.getBorrowed().size() + " books borrowed.");
+        output.println("\nSelect a book: ");
+        for (int i = 0; i < catalogue.getSize(); i++) {
+            output.println("");
+        }
         output.flush();
         return 0;
     }

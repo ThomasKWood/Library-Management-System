@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 
 public class Catalogue {
-    protected ArrayList<Book> catalogue;
+    private ArrayList<Book> catalogue;
 
     public Catalogue() {
         catalogue = new ArrayList<Book>();
