@@ -20,10 +20,10 @@ public class Book {
     }
 
     public boolean getAvailability() {
-        return available;
+        return this.available;
     }
 
     public void setAvailability(boolean status) {
-
+        this.available = status;
     }
 }

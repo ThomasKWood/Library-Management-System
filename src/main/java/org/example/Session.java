@@ -84,10 +84,29 @@ public class Session {
     }
 
     public void setUser(User usr){
-//        this.currUser = usr;
+        this.currUser = usr;
     }
 
     public void prompt(Scanner input, PrintWriter output) {
-        output.println("");
+        if (!signedIn()) {
+            output.println("Not logged in!");
+        } else {
+            int sent = 0;
+
+            while (this.currUser.hasNoti()) {
+                String thisTitle = this.currUser.popNoti();
+                Book thisBook = library.getBook(thisTitle);
+
+                // check valid & available
+                if (thisBook != null && thisBook.getAvailability()) {
+                    output.println(thisTitle + " is available!");
+                    sent++;
+                }
+            }
+
+            if (sent == 0) {
+                output.println("No notifications!");
+            }
+        }
     }
 }

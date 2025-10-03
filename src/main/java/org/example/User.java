@@ -5,12 +5,14 @@ public class User {
     private String username;
     private volatile String password;
 
-    public ArrayList<Book> borrowed;
+    private ArrayList<Book> borrowed;
+    private ArrayList<String> notifications;
 
     public User(String usr, String pass) {
         this.username = usr;
         this.password = pass;
-        borrowed = new ArrayList<Book>();
+        this.borrowed = new ArrayList<Book>();
+        this.notifications = new ArrayList<String>();
     }
 
     public String getUsername() {
@@ -67,6 +69,14 @@ public class User {
     }
 
     public void addNoti(String text) {
+        this.notifications.add(text);
+    }
 
+    public boolean hasNoti() {
+        return !this.notifications.isEmpty();
+    }
+
+    public String popNoti() {
+        return this.notifications.removeFirst();
     }
 }

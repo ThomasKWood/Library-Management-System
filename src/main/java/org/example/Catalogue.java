@@ -24,6 +24,9 @@ public class Catalogue {
     }
 
     public Book getBook(int index) {
+        if (index < 0 || index >= getSize()) {
+            return null;
+        }
         return catalogue.get(index);
     }
 

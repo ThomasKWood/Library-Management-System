@@ -462,7 +462,10 @@ public class MainTest {
         session.prompt(new Scanner(srInput), new PrintWriter(output));
         output.flush();
 
-        if (!output.toString().contains("o notifications")){
+        if (!output.toString().contains("Stealth is available")){
+            assert false;
+        }
+        if (!output.toString().contains("Mickey7 is available")){
             assert false;
         }
     }
