@@ -522,4 +522,90 @@ public class MainTest {
             assert false;
         }
     }
+
+    @Test
+    @DisplayName("Menu - main menu options presented")
+    void RESP_07_test_01() {
+        Menu menu = new Menu();
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        menu.mainMenu(new Scanner(srInput), new PrintWriter(output));
+
+        String[] words = {"1.", "2.", "3.", "Borrow", "Return", "Sign-out"};
+
+        for (String word : words) {
+            if (!output.toString().contains(word)) {
+                assert false;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Menu - valid option selected")
+    void RESP_07_test_02() {
+        Menu menu = new Menu();
+
+        String input = "1";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        int selected = menu.getPick(new Scanner(srInput), 1,3);
+        output.flush();
+
+        assertEquals(1,selected);
+    }
+
+    @Test
+    @DisplayName("Menu - invalid option selected")
+    void RESP_07_test_03() {
+        Menu menu = new Menu();
+
+        String input = "4";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        menu.getPick(new Scanner(srInput), 1,3);
+        output.flush();
+
+        String[] words = {"Invalid", "from 1 to 3"};
+
+        for (String word : words) {
+            if (!output.toString().contains(word)) {
+                assert false;
+            }
+        }
+
+    }
+
+//    @Test
+//    @DisplayName("Menu - borrow selected")
+//    void RESP_07_test_04() {
+//        Menu menu = new Menu();
+//
+//        String input = "1";
+//        StringReader srInput = new StringReader(input);
+//        StringWriter output = new StringWriter();
+//
+//        menu.mainMenu(new Scanner(srInput), new PrintWriter(output));
+//
+//        String[] words = {"Borrow Selected", "1. Skunk Works", "20. Shōgun (Novel)"}; // check for first and last book presented
+//
+//        for (String word : words) {
+//            if (!output.toString().contains(word)) {
+//                assert false;
+//            }
+//        }
+//    }
+//
+//    @Test
+//    @DisplayName("Menu - return  - ")
+//
+//    @Test
+//    @DisplayName("Menu - logout selected")
+//
+//    @Test
+//    @DisplayName("Menu - invalid option selected")
 }
