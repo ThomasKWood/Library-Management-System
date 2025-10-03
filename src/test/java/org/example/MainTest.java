@@ -552,14 +552,14 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        int selected = menu.getPick(new Scanner(srInput), 1,3);
+        int selected = menu.getPick(new Scanner(srInput), new PrintWriter(output), 1,3);
         output.flush();
 
         assertEquals(1,selected);
     }
 
     @Test
-    @DisplayName("Menu - invalid option selected")
+    @DisplayName("Menu - invalid option selected - bad number - above max")
     void RESP_07_test_03() {
         Menu menu = new Menu();
 
@@ -567,10 +567,10 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.getPick(new Scanner(srInput), 1,3);
+        menu.getPick(new Scanner(srInput), new PrintWriter(output), 1,3);
         output.flush();
 
-        String[] words = {"Invalid", "from 1 to 3"};
+        String[] words = {"Invalid Option", "from 1 to 3"};
 
         for (String word : words) {
             if (!output.toString().contains(word)) {
@@ -579,6 +579,51 @@ public class MainTest {
         }
 
     }
+
+    @Test
+    @DisplayName("Menu - invalid option selected - bad number - bellow min")
+    void RESP_07_test_04() {
+        Menu menu = new Menu();
+
+        String input = "0";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        menu.getPick(new Scanner(srInput), new PrintWriter(output), 1,3);
+        output.flush();
+
+        String[] words = {"Invalid Option", "from 1 to 3"};
+
+        for (String word : words) {
+            if (!output.toString().contains(word)) {
+                assert false;
+            }
+        }
+
+    }
+
+    @Test
+    @DisplayName("Menu - invalid option selected - not a number")
+    void RESP_07_test_05() {
+        Menu menu = new Menu();
+
+        String input = "a";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        menu.getPick(new Scanner(srInput), new PrintWriter(output), 1,3);
+        output.flush();
+
+        String[] words = {"Invalid Input"};
+
+        for (String word : words) {
+            if (!output.toString().contains(word)) {
+                assert false;
+            }
+        }
+
+    }
+
 
 //    @Test
 //    @DisplayName("Menu - borrow selected")
