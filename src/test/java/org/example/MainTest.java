@@ -625,32 +625,87 @@ public class MainTest {
     }
 
 
-//    @Test
-//    @DisplayName("Menu - borrow selected")
-//    void RESP_07_test_04() {
-//        Menu menu = new Menu();
-//
-//        String input = "1";
-//        StringReader srInput = new StringReader(input);
-//        StringWriter output = new StringWriter();
-//
-//        menu.mainMenu(new Scanner(srInput), new PrintWriter(output));
-//
-//        String[] words = {"Borrow Selected", "1. Skunk Works", "20. Shōgun (Novel)"}; // check for first and last book presented
-//
-//        for (String word : words) {
-//            if (!output.toString().contains(word)) {
-//                assert false;
-//            }
-//        }
-//    }
-//
-//    @Test
-//    @DisplayName("Menu - return  - ")
-//
-//    @Test
-//    @DisplayName("Menu - logout selected")
-//
-//    @Test
-//    @DisplayName("Menu - invalid option selected")
+    @Test
+    @DisplayName("Borrow Count- no borrowed")
+    void RESP_08_test_01() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        Menu menu = new Menu();
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), users.getUser("thomaswood"), catalogue);
+
+        String[] words = {"0", "borrowed"};
+
+        for (String word : words) {
+            if (!output.toString().contains(word)) {
+                assert false;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Borrow Count - some borrowed")
+    void RESP_08_test_02() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+        testUser.addBorrowed(catalogue.getBook("Skunk Works"));
+
+        Menu menu = new Menu();
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        String[] words = {"1", "borrowed"};
+
+        for (String word : words) {
+            if (!output.toString().contains(word)) {
+                assert false;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Borrow Count - at limit")
+    void RESP_08_test_03() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+        testUser.addBorrowed(catalogue.getBook("Skunk Works"));
+        testUser.addBorrowed(catalogue.getBook("Fulcrum"));
+        testUser.addBorrowed(catalogue.getBook("No Easy Day"));
+
+        Menu menu = new Menu();
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        String[] words = {"3", "borrowed"};
+
+        for (String word : words) {
+            if (!output.toString().contains(word)) {
+                assert false;
+            }
+        }
+    }
+
 }
