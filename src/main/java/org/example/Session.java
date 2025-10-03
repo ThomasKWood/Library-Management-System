@@ -9,14 +9,14 @@ public class Session {
     private Users users;
 
     public Session(Catalogue library, Users users) {
-        currUser = null;
+        this.currUser = null;
         this.users = users;
         this.library = library;
     }
 
     public void login(Scanner input, PrintWriter output) {
         //
-        if (currUser == null) {
+        if (this.currUser == null) {
             output.println("Please enter your username: ");
             String usr;
             if (input.hasNextLine()) {
@@ -40,24 +40,24 @@ public class Session {
             for (User user : users.getUsers()) {
                 if (user.getUsername().equals(usr)) {
                     if (user.passwordCorrect(pass)) {
-                        currUser = user;
-                        output.println("Welcome " + currUser.getUsername());
+                        this.currUser = user; // TODO replace with setter
+                        output.println("Welcome " + this.currUser.getUsername());
                     }
                 }
             }
             // this will also print if the username doesn't exist. technically this is more secure
-            if (currUser == null) {
+            if (this.currUser == null) {
                 output.println("Username or password incorrect.");
                 login(input, output);
             }
         } else {
-            output.println("You are already logged in as: " + currUser.getUsername());
+            output.println("You are already logged in as: " + this.currUser.getUsername());
         }
         output.flush();
     }
 
     public boolean signedIn() {
-        return currUser != null;
+        return this.currUser != null;
     }
 
     public void logout(Scanner input, PrintWriter output) {
@@ -69,7 +69,7 @@ public class Session {
             return;
         }
         if (lineIn.contains("Yes")) {
-            currUser = null;
+            this.currUser = null;
         } else if (lineIn.contains("No")) {
             return;
         } else {
@@ -80,6 +80,14 @@ public class Session {
     }
 
     public User getUser() {
-        return currUser;
+        return this.currUser;
+    }
+
+    public void setUser(User usr){
+//        this.currUser = usr;
+    }
+
+    public void prompt(Scanner input, PrintWriter output) {
+        output.println("");
     }
 }

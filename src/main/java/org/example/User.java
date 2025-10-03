@@ -65,4 +65,8 @@ public class User {
         }
         return false; // book not in borrowed
     }
+
+    public void addNoti(String text) {
+
+    }
 }

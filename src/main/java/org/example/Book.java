@@ -22,4 +22,8 @@ public class Book {
     public boolean getAvailability() {
         return available;
     }
+
+    public void setAvailability(boolean status) {
+
+    }
 }

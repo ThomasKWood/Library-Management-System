@@ -153,8 +153,6 @@ public class MainTest {
     void RESP_03_test_01() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "\n\n";
@@ -174,8 +172,6 @@ public class MainTest {
     void RESP_03_test_02() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "\n\n";
@@ -196,8 +192,6 @@ public class MainTest {
     void RESP_04_test_01() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "thomaswood\n1234\n";
@@ -217,8 +211,6 @@ public class MainTest {
     void RESP_04_test_02() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "validusername12\n1234\n";
@@ -238,8 +230,6 @@ public class MainTest {
     void RESP_04_test_03() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "thomaswood\n1235\n";
@@ -259,8 +249,6 @@ public class MainTest {
     void RESP_04_test_04() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "thomaswood\n1234\n";
@@ -282,8 +270,6 @@ public class MainTest {
     void RESP_04_test_05() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "thomaswood\n1235\nthomaswood\n1234\n";
@@ -303,7 +289,6 @@ public class MainTest {
     void RESP_05_test_01() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
         Session session = new Session(null, users);
 
         if (session.signedIn()) {
@@ -316,8 +301,6 @@ public class MainTest {
     void RESP_05_test_02() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "thomaswood\n1234\n";
@@ -337,8 +320,6 @@ public class MainTest {
     void RESP_05_test_03() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "thomaswood\n1234\n";
@@ -358,8 +339,6 @@ public class MainTest {
     void RESP_05_test_04() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "thomaswood\n1234\n";
@@ -383,8 +362,6 @@ public class MainTest {
     void RESP_05_test_05() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "thomaswood\n1234\n";
@@ -409,8 +386,6 @@ public class MainTest {
     void RESP_05_test_06() {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-
         Session session = new Session(null, users);
 
         String input = "No\n";
@@ -420,6 +395,127 @@ public class MainTest {
         session.logout(new Scanner(srInput), new PrintWriter(output));
 
         if (session.signedIn()) {
+            assert false;
+        }
+    }
+    @Test
+    @DisplayName("Notifications - no one logged in")
+    void RESP_06_test_01() {
+        Session session = new Session(null, null);
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.prompt(new Scanner(srInput), new PrintWriter(output));
+        output.flush();
+
+        if (!output.toString().contains("ot logged in")){
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Notifications for when books become available - no notifications")
+    void RESP_06_test_02() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+        Session session = new Session(catalogue, users);
+
+        // add in user nofitcations
+        // not for this one
+
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.setUser(users.getUser("thomaswood")); // skip login
+        session.prompt(new Scanner(srInput), new PrintWriter(output));
+        output.flush();
+
+        if (!output.toString().contains("o notifications")){
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Notifications for when books become available - valid books")
+    void RESP_06_test_03() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+        Session session = new Session(catalogue, users);
+
+        // add in user nofitcations
+        users.getUser("thomaswood").addNoti("Stealth");
+        users.getUser("thomaswood").addNoti("Mickey7");
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.setUser(users.getUser("thomaswood")); // skip login
+        session.prompt(new Scanner(srInput), new PrintWriter(output));
+        output.flush();
+
+        if (!output.toString().contains("o notifications")){
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Notifications for when books become available - invalid books - book isnt available")
+    void RESP_06_test_04() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+        Session session = new Session(catalogue, users);
+
+        // set not available
+        catalogue.getBook("Stealth").setAvailability(false);
+
+        // add in user nofitcations
+        users.getUser("thomaswood").addNoti("Stealth");
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.setUser(users.getUser("thomaswood")); // skip login
+        session.prompt(new Scanner(srInput), new PrintWriter(output));
+        output.flush();
+
+        if (!output.toString().contains("o notifications")){
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Notifications for when books become available - invalid books - book doesnt exist")
+    void RESP_06_test_05() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+        Session session = new Session(catalogue, users);
+
+        // add in user nofitcations
+        users.getUser("thomaswood").addNoti("Mark Carney's Downtown Ottawa Adventure");
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.setUser(users.getUser("thomaswood")); // skip login
+        session.prompt(new Scanner(srInput), new PrintWriter(output));
+        output.flush();
+
+        if (!output.toString().contains("o notifications")){
             assert false;
         }
     }
