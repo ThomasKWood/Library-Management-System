@@ -80,6 +80,6 @@ public class Session {
     }
 
     public User getUser() {
-        return null;
+        return currUser;
     }
 }
