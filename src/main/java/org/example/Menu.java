@@ -18,7 +18,12 @@ public class Menu {
         output.println("\nYou have " + user.getBorrowed().size() + " books borrowed.");
         output.println("\nSelect a book: ");
         for (int i = 0; i < catalogue.getSize(); i++) {
-            output.println("");
+            Book thisBook = catalogue.getBook(i);
+            if (thisBook.getAvailability()) {
+                output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - " + thisBook.getStatusCode().getLabel());
+            } else if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) {
+
+            }
         }
         output.flush();
         return 0;

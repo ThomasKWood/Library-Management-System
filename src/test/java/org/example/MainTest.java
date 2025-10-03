@@ -480,7 +480,7 @@ public class MainTest {
         Session session = new Session(catalogue, users);
 
         // set not available
-        catalogue.getBook("Stealth").setAvailability(false);
+        catalogue.getBook("Stealth").setStatus(Book.StatusCode.CHECKED);
 
         // add in user nofitcations
         users.getUser("thomaswood").addNoti("Stealth");
