@@ -332,26 +332,26 @@ public class MainTest {
         }
     }
 
-//    @Test
-//    @DisplayName("Test that session username is correct")
-//    void RESP_05_test_03() {
-//        InitializeUsers sampleUsers = new InitializeUsers();
-//        Users users = sampleUsers.initUsers();
-//
-//
-//        Session session = new Session(null, users);
-//
-//        String input = "thomaswood\n1234\n";
-//        StringReader srInput = new StringReader(input);
-//        StringWriter output = new StringWriter();
-//
-//
-//        session.login(new Scanner(srInput), new PrintWriter(output));
-//
-//        if (!session.getUser().getUsername().equals("thomaswood")) {
-//            assert false;
-//        }
-//    }
+    @Test
+    @DisplayName("Test that session username is correct")
+    void RESP_05_test_03() {
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+
+        Session session = new Session(null, users);
+
+        String input = "thomaswood\n1234\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        if (!session.getUser().getUsername().equals("thomaswood")) {
+            assert false;
+        }
+    }
 
     @Test
     @DisplayName("Test that session is cleared on logout")

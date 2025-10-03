@@ -78,4 +78,8 @@ public class Session {
         }
         output.flush();
     }
+
+    public User getUser() {
+        return null;
+    }
 }
