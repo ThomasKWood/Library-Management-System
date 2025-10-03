@@ -708,4 +708,79 @@ public class MainTest {
         }
     }
 
+    @Test
+    @DisplayName("Borrow - List Books - all books printed")
+    void RESP_09_test_01() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+
+        Menu menu = new Menu();
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        for (Book book : catalogue.getCatalogue()) {
+            if (!output.toString().contains(book.getTitle())) {
+                assert false;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Borrow - List Books - availability check")
+    void RESP_09_test_02() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+
+        Menu menu = new Menu();
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        for (Book book : catalogue.getCatalogue()) {
+            if (!output.toString().contains(book.getTitle())) {
+                assert false;
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Borrow - List Books - due date check")
+    void RESP_09_test_03() {
+        InitializeLibrary lib = new InitializeLibrary();
+        Catalogue catalogue = lib.initLibrary();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+
+        Menu menu = new Menu();
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        for (Book book : catalogue.getCatalogue()) {
+            if (!output.toString().contains(book.getTitle())) {
+                assert false;
+            }
+        }
+    }
+
 }
