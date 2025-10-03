@@ -1,7 +1,5 @@
 package org.example;
 
-import jdk.jfr.Category;
-
 import java.io.PrintWriter;
 import java.util.Scanner;
 
