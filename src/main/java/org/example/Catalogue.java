@@ -14,6 +14,10 @@ public class Catalogue {
         catalogue.add(new Book(title, author));
     }
 
+    public void addBook(Book book) {
+        catalogue.add(book);
+    }
+
     public Book getBook(String title) {
         for (Book book : catalogue) {
             if (title.equals(book.getTitle())) {

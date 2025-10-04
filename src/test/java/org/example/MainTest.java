@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.StringReader;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.io.PrintWriter;
@@ -480,7 +481,7 @@ public class MainTest {
         Session session = new Session(catalogue, users);
 
         // set not available
-        catalogue.getBook("Stealth").setStatus(Book.StatusCode.CHECKED);
+        catalogue.getBook("Stealth").setDueDateNow();
 
         // add in user nofitcations
         users.getUser("thomaswood").addNoti("Stealth");
@@ -736,12 +737,23 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - List Books - availability check")
     void RESP_09_test_02() {
-        InitializeLibrary lib = new InitializeLibrary();
-        Catalogue catalogue = lib.initLibrary();
+        Catalogue catalogue = new Catalogue();
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
 
         User testUser = users.getUser("thomaswood");
+
+        // test books:
+        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        Book book2 = new Book("No Easy Day", "Matt Bissonnette & Kevin Maurer");
+        Book book3 = new Book("Mickey7", "Edward Ashton");
+
+        book2.setDueDateNow();
+        book3.placeHold(users.getUser("thomaswood"));
+
+        catalogue.addBook(book1);
+        catalogue.addBook(book2);
+        catalogue.addBook(book3);
 
         Menu menu = new Menu();
 
@@ -751,8 +763,14 @@ public class MainTest {
 
         menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
 
-        for (Book book : catalogue.getCatalogue()) {
-            if (!output.toString().contains(book.getTitle())) {
+        String[] words = {
+                "1. Stealth by Peter J. Westwick - Available",
+                "2. No Easy Day by Matt Bissonnette & Kevin Maurer - Checked Out - Available on ",
+                "3. Mickey7 by Edward Ashton - On Hold",
+        };
+
+        for (String word : words) {
+            if (!output.toString().contains(word)) {
                 assert false;
             }
         }
@@ -761,12 +779,16 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - List Books - due date check")
     void RESP_09_test_03() {
-        InitializeLibrary lib = new InitializeLibrary();
-        Catalogue catalogue = lib.initLibrary();
+        Catalogue catalogue = new Catalogue();
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
 
         User testUser = users.getUser("thomaswood");
+
+        // test books:
+        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        LocalDateTime expected = book1.setDueDateNow();
+        catalogue.addBook(book1);
 
         Menu menu = new Menu();
 
@@ -776,11 +798,10 @@ public class MainTest {
 
         menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
 
-        for (Book book : catalogue.getCatalogue()) {
-            if (!output.toString().contains(book.getTitle())) {
-                assert false;
-            }
+        if (!output.toString().contains(expected.toString())) {
+            assert false;
         }
+
     }
 
 }

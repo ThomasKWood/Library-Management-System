@@ -1,5 +1,9 @@
 package org.example;
 
+import java.time.LocalDateTime;
+import java.util.Queue;
+import java.util.LinkedList;
+
 public class Book {
     public enum StatusCode {
         AVAIL("Available", true),
@@ -26,11 +30,16 @@ public class Book {
     private final String title;
     private final String author;
     private StatusCode status;
+    private LocalDateTime due;
+    private Queue<User> holdQueue;
 
     public Book(String title, String author){
         this.title = title;
         this.author = author;
         this.status = StatusCode.AVAIL; // default
+        this.due = null;
+        this.holdQueue = new LinkedList<>();
+
     }
 
     public String getTitle(){
@@ -49,8 +58,32 @@ public class Book {
         return status;
     }
 
-    public void setStatus(StatusCode status) {
+    private void setStatus(StatusCode status) {
         this.status = status;
-        // add logic to determine due date and clear when avail
     }
+
+
+    public LocalDateTime setDueDateNow() {
+        // implement later
+        if (getAvailability()) {
+            this.due = LocalDateTime.now().plusDays(14);
+            setStatus(StatusCode.CHECKED);
+        }
+
+
+        return this.due; // return current due date if not available
+    }
+
+    public void placeHold(User usr) {
+        if (!holdQueue.contains(usr)) {
+            holdQueue.add(usr);
+            setStatus(StatusCode.HOLD);
+        }
+    }
+
+    public LocalDateTime getDue() {
+        return this.due;
+    }
+
+    // return - clear CHECKED
 }

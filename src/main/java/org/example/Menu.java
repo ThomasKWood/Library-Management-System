@@ -19,14 +19,21 @@ public class Menu {
         output.println("\nSelect a book: ");
         for (int i = 0; i < catalogue.getSize(); i++) {
             Book thisBook = catalogue.getBook(i);
-            if (thisBook.getAvailability()) {
+            if (thisBook.getStatusCode().equals(Book.StatusCode.AVAIL) || thisBook.getStatusCode().equals(Book.StatusCode.HOLD)) {
                 output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - " + thisBook.getStatusCode().getLabel());
-            } else if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) {
-
+            } else if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) { // could be else
+                // print available on
+                output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - " + thisBook.getStatusCode().getLabel() + " - Available on " + thisBook.getDue().toString());
             }
         }
+        // get pick
+        int selection = 0;
+        if (catalogue.getSize() > 0) {
+            selection = getPick(input, output, 1, catalogue.getSize());
+        }
+
         output.flush();
-        return 0;
+        return selection;
     }
 
     public int returnMenu(Scanner input, PrintWriter output, User user, Catalogue catalogue) {
