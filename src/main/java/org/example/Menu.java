@@ -36,6 +36,10 @@ public class Menu {
         return selection;
     }
 
+    public int bookDetails(Scanner input, PrintWriter output, Book book) {
+        return 0;
+    }
+
     public int returnMenu(Scanner input, PrintWriter output, User user, Catalogue catalogue) {
         output.println("");
         output.flush();

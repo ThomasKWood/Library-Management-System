@@ -804,4 +804,55 @@ public class MainTest {
 
     }
 
+    @Test
+    @DisplayName("Borrow - Select Book - confirm selected is correct")
+    void RESP_10_test_01() {
+        Catalogue catalogue = new Catalogue();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+
+        // test books:
+        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        catalogue.addBook(book1);
+
+        Menu menu = new Menu();
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        int selected = menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        menu.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected));
+        if (output.toString().contains("Stealth")) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Borrow - Select Book - user confirmation is correct")
+    void RESP_10_test_02() {
+        Catalogue catalogue = new Catalogue();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+
+        // test books:
+        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        catalogue.addBook(book1);
+
+        Menu menu = new Menu();
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        int selected = menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        selected = menu.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected));
+        assertEquals(1, selected);
+    }
 }
