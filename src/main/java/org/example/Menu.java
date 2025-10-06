@@ -37,7 +37,22 @@ public class Menu {
     }
 
     public int bookDetails(Scanner input, PrintWriter output, Book book) {
-        return 0;
+        output.println("\nYou have selected:");
+        output.println(book.getTitle());
+        output.println(book.getAuthor());
+        output.println(book.getStatusCode().getLabel());
+        output.println("\n Are you sure you would like to proceed with borrowing this book?");
+        output.println("1. Yes\n2. No");
+
+        int selected = getPick(input, output, 1, 2);
+
+        if (selected == 1) {
+            output.println("You have selected Yes. Proceeding to booking...");
+        } else {
+            output.println("You have selected No. Bringing you back to main menu.");
+        }
+        output.flush();
+        return selected;
     }
 
     public int returnMenu(Scanner input, PrintWriter output, User user, Catalogue catalogue) {

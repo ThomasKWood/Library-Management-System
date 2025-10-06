@@ -807,26 +807,20 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - Select Book - confirm selected is correct")
     void RESP_10_test_01() {
-        Catalogue catalogue = new Catalogue();
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
-
-        User testUser = users.getUser("thomaswood");
-
-        // test books:
         Book book1 = new Book("Stealth", "Peter J. Westwick");
+        Catalogue catalogue = new Catalogue();
         catalogue.addBook(book1);
-
         Menu menu = new Menu();
-
-        String input = "";
+        String input = "1";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        int selected = menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
-
-        menu.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected));
-        if (output.toString().contains("Stealth")) {
+        int selected = menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), users.getUser("thomaswood"), catalogue);
+        output = new StringWriter();
+        menu.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected-1));
+        if (!output.toString().contains("Stealth")) {
             assert false;
         }
     }
@@ -846,13 +840,14 @@ public class MainTest {
 
         Menu menu = new Menu();
 
-        String input = "";
+        String input = "1";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
         int selected = menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
-
-        selected = menu.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected));
+        srInput = new StringReader(input);
+        output = new StringWriter();
+        selected = menu.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected-1));
         assertEquals(1, selected);
     }
 }
