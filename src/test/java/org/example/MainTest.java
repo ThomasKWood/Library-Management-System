@@ -964,7 +964,13 @@ public class MainTest {
         Users users = initUsr.initUsers();
 
         Session session = new Session(catalogue, users);
-        session.setUser(users.getUser("thomaswood"));
+
+        User testUsr = users.getUser("thomaswood");
+        testUsr.addBorrowed(catalogue.getBook(0));
+        testUsr.addBorrowed(catalogue.getBook(1));
+        testUsr.addBorrowed(catalogue.getBook(2));
+
+        session.setUser(testUsr);
 
         assert !session.checkElig();
     }
