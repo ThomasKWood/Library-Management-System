@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.StringReader;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import java.io.PrintWriter;
@@ -975,4 +976,16 @@ public class MainTest {
         assert !session.checkElig();
     }
 
+    @Test
+    @DisplayName("Borrow - calculate due date")
+    void RESP_13_test_01() {
+        LocalDateTime expected = LocalDateTime.now().plusDays(14);
+
+        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        LocalDateTime actual = book1.setDueDateNow();
+
+        // break down into just DD-MM-YY
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        assertEquals(expected.format(formatter), actual.format(formatter));
+    }
 }
