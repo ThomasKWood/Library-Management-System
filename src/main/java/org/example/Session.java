@@ -138,6 +138,6 @@ public class Session {
     }
 
     public boolean checkElig() {
-        return false;
+       return currUser.getBorrowed().size() < 3;
     }
 }
