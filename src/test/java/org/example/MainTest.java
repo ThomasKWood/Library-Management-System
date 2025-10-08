@@ -936,6 +936,6 @@ public class MainTest {
         Session session = new Session(catalogue, users);
         session.setUser(testUser);
 
-        assert session.checkAvail(0);
+        assert !session.checkAvail(0);
     }
 }

@@ -84,6 +84,9 @@ public class Book {
     public LocalDateTime getDue() {
         return this.due;
     }
-
+    public User firstQueue() {
+        return holdQueue.peek();
+    }
     // return - clear CHECKED
+
 }

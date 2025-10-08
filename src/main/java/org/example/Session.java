@@ -111,6 +111,23 @@ public class Session {
     }
 
     public boolean checkAvail(int bookIndex) {
-        return false;
+        Book thisBook = library.getBook(bookIndex);
+
+        if (thisBook.getAvailability()) {
+            return true;
+        } else {
+            if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) {
+                return false; // book is checked out
+            } else if (thisBook.firstQueue() != null) {
+                // check hold queue to see if current signed in is infront
+                if (thisBook.firstQueue().getUsername().equals(currUser.getUsername())) {
+                    return true; // currUser is first in hold queue
+                } else {
+                    return false;
+                }
+
+            }
+            return false;
+        }
     }
 }
