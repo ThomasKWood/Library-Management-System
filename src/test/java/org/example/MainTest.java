@@ -850,4 +850,92 @@ public class MainTest {
         selected = menu.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected-1));
         assertEquals(1, selected);
     }
+
+    @Test
+    @DisplayName("Borrow - verify availability - book free")
+    void RESP_11_test_01() {
+        Catalogue catalogue = new Catalogue();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+
+
+
+        // test books:
+        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        catalogue.addBook(book1);
+
+        Session session = new Session(catalogue, users);
+        session.setUser(testUser);
+
+        assert session.checkAvail(0);
+    }
+
+    @Test
+    @DisplayName("Borrow - verify availability - book on hold but this user is first in queue")
+    void RESP_11_test_02() {
+        Catalogue catalogue = new Catalogue();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+
+
+
+        // test books:
+        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        book1.placeHold(testUser);
+        catalogue.addBook(book1);
+
+        Session session = new Session(catalogue, users);
+        session.setUser(testUser);
+
+        assert session.checkAvail(0);
+    }
+
+    @Test
+    @DisplayName("Borrow - verify availability - book not available - user is not first")
+    void RESP_11_test_03() {
+        Catalogue catalogue = new Catalogue();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+
+
+
+        // test books:
+        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        book1.placeHold(users.getUser("jeff"));
+        catalogue.addBook(book1);
+
+
+        Session session = new Session(catalogue, users);
+        session.setUser(testUser);
+
+        assert !session.checkAvail(0);
+    }
+
+    @Test
+    @DisplayName("Borrow - verify availability - book not available - checked out")
+    void RESP_11_test_04() {
+        Catalogue catalogue = new Catalogue();
+        InitializeUsers sampleUsers = new InitializeUsers();
+        Users users = sampleUsers.initUsers();
+
+        User testUser = users.getUser("thomaswood");
+
+
+
+        // test books:
+        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        book1.setDueDateNow();
+        catalogue.addBook(book1);
+
+        Session session = new Session(catalogue, users);
+        session.setUser(testUser);
+
+        assert session.checkAvail(0);
+    }
 }

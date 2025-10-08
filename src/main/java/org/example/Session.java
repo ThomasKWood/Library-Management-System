@@ -109,4 +109,8 @@ public class Session {
             }
         }
     }
+
+    public boolean checkAvail(int bookIndex) {
+        return false;
+    }
 }
