@@ -988,4 +988,169 @@ public class MainTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         assertEquals(expected.format(formatter), actual.format(formatter));
     }
+
+    @Test
+    @DisplayName("Borrow - borrow pass - record check")
+    void RESP_14_test_01() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        String input = "1";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        boolean assertValue = false;
+        for (String string : session.getRecord()) {
+            if (string.contains("thomaswood borrowed Stealth")){
+                assertValue = true;
+            }
+        }
+        assert assertValue;
+    }
+
+    @Test
+    @DisplayName("Borrow - borrow fail - record check")
+    void RESP_14_test_02() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        catalogue.getBook("Stealth").setDueDateNow();
+
+        String input = "1";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        boolean assertValue = true;
+        for (String string : session.getRecord()) {
+            if (string.contains("thomaswood borrowed Stealth")){
+                assertValue = false;
+            }
+        }
+        assert assertValue;
+    }
+
+    @Test
+    @DisplayName("Borrow - borrow pass - account check")
+    void RESP_14_test_03() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        String input = "1"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        // pre borrow check
+        if (!testUsr.getBorrowed().isEmpty()) {
+            assert false;
+        }
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        // post borrow check
+        if (testUsr.getBorrowed().isEmpty()) {
+            assert false;
+        }
+        else if (!testUsr.getBorrowed().getFirst().getTitle().equals("Stealth")) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Borrow - borrow fail - account check")
+    void RESP_14_test_04() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        catalogue.getBook("Stealth").setDueDateNow();
+
+        String input = "1"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        // pre borrow check
+        if (!testUsr.getBorrowed().isEmpty()) {
+            assert false;
+        }
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        // post borrow check
+        if (!testUsr.getBorrowed().isEmpty()) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Borrow - borrow pass - book check")
+    void RESP_14_test_05() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        String input = "1"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        // post borrow check
+        assert !catalogue.getBook("Stealth").getAvailability();
+    }
+
+    @Test
+    @DisplayName("Borrow - borrow fail - book check")
+    void RESP_14_test_06() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        catalogue.getBook("Stealth").setDueDateNow();
+
+        String input = "1"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        // post borrow check
+        assert catalogue.getBook("Stealth").getAvailability();
+    }
 }

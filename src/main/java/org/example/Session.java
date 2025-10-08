@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Session {
@@ -8,12 +9,14 @@ public class Session {
     private Catalogue library;
     private Users users;
     private Menu menu;
+    private ArrayList<String> record;
 
     public Session(Catalogue library, Users users) {
         this.currUser = null;
         this.users = users;
         this.library = library;
         this.menu = new Menu();
+        this.record = new ArrayList<>();
     }
 
     public void login(Scanner input, PrintWriter output) {
@@ -133,11 +136,15 @@ public class Session {
         }
     }
 
-    public void borrow() {
+    public void borrow(Scanner input, PrintWriter output) {
         return;
     }
 
     public boolean checkElig() {
        return currUser.getBorrowed().size() < 3;
+    }
+
+    public ArrayList<String> getRecord() {
+        return record;
     }
 }
