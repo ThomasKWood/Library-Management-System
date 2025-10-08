@@ -7,11 +7,13 @@ public class Session {
     private User currUser;
     private Catalogue library;
     private Users users;
+    private Menu menu;
 
     public Session(Catalogue library, Users users) {
         this.currUser = null;
         this.users = users;
         this.library = library;
+        this.menu = new Menu();
     }
 
     public void login(Scanner input, PrintWriter output) {
@@ -129,5 +131,13 @@ public class Session {
             }
             return false;
         }
+    }
+
+    public void borrow() {
+        return;
+    }
+
+    public boolean checkElig() {
+        return false;
     }
 }

@@ -938,4 +938,35 @@ public class MainTest {
 
         assert !session.checkAvail(0);
     }
+
+    @Test
+    @DisplayName("Borrow - verify eligibility - not at limit")
+    void RESP_12_test_01() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        session.setUser(users.getUser("thomaswood"));
+
+        assert session.checkElig();
+    }
+
+    @Test
+    @DisplayName("Borrow - verify eligibility - at limit")
+    void RESP_12_test_02() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        session.setUser(users.getUser("thomaswood"));
+
+        assert !session.checkElig();
+    }
+
 }
