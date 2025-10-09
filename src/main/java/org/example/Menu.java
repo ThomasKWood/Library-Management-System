@@ -81,4 +81,6 @@ public class Menu {
 
         return selection;
     }
+
+    //protected
 }

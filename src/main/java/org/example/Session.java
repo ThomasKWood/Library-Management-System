@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -137,7 +138,49 @@ public class Session {
     }
 
     public void borrow(Scanner input, PrintWriter output) {
-        return;
+        int selection;
+
+        selection = menu.borrowMenu(input, output, currUser, library);
+
+        int bookIndex = selection-1;
+        Book borrowedBook = library.getBook(bookIndex);
+        selection = menu.bookDetails(input, output, borrowedBook);
+
+        if (selection == 1) {
+            boolean bAvail = checkAvail(bookIndex);
+            boolean uElig = checkElig();
+
+            // first check if user already has this book checked
+            // RESP 17
+
+
+            if (bAvail && checkElig()) {
+                // update book
+                LocalDateTime date = borrowedBook.setDueDateNow();
+                // update record
+                this.record.add(currUser.getUsername() + " borrowed " + borrowedBook.getTitle() + " - due " + date.toString());
+                // update account
+                currUser.addBorrowed(borrowedBook);
+                // present info to user
+
+
+            } else {
+                // show hold menu
+
+                // ask if they wish to hold instead
+                // get pick
+                selection = menu.getPick(input, output, 1, 2);
+
+                if (selection == 1) {
+
+                }
+
+
+            }
+        } else {
+            return; // will this work in main?
+        }
+
     }
 
     public boolean checkElig() {
