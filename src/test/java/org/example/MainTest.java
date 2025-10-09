@@ -1153,4 +1153,54 @@ public class MainTest {
         // post borrow check
         assert !catalogue.getBook("Stealth").getAvailability();
     }
+
+    @Test
+    @DisplayName("Borrow - due date presented upon borrow success")
+    void RESP_15_test_01() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        catalogue.getBook("Stealth").setDueDateNow();
+
+        String input = "15\n1\n"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        if (!output.toString().contains("You have successfully checked out Stealth by Peter J. Westwick. It is due on the ")) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Borrow - upon confirmation ack - main menu is presented")
+    void RESP_15_test_02() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        catalogue.getBook("Stealth").setDueDateNow();
+
+        String input = "15\n1\n1\n"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        if (!output.toString().contains("MAIN MENU")) {
+            assert false;
+        }
+    }
 }

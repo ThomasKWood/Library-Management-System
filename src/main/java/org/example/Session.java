@@ -162,7 +162,8 @@ public class Session {
                 // update account
                 currUser.addBorrowed(borrowedBook);
                 // present info to user
-
+                // get ack
+                // return
 
             } else {
                 // show hold menu
