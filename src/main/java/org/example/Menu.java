@@ -9,7 +9,6 @@ public class Menu {
     public int mainMenu(Scanner input, PrintWriter output) {
         output.println("\n---------------- MAIN MENU ----------------\n1. Borrow\n2. Return\n3.Sign-out");
         int selection = getPick(input, output, 1,3);
-        output.flush();
         return selection;
     }
 
@@ -33,7 +32,7 @@ public class Menu {
             selection = getPick(input, output, 1, catalogue.getSize());
         }
 
-        output.flush();
+
         return selection;
     }
 
@@ -49,7 +48,7 @@ public class Menu {
 
         if (selected == 1) {
             output.println("You have selected Yes. Proceeding to booking...");
-        } else {
+        } else if (selected == 0) {
             output.println("You have selected No. Bringing you back to main menu.");
         }
         return selected;

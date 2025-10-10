@@ -146,6 +146,10 @@ public class Session {
         Book borrowedBook = library.getBook(bookIndex);
         selection = menu.bookDetails(input, output, borrowedBook);
 
+        if (selection == -1) {
+            return;
+        }
+
         if (selection == 1) {
             boolean bAvail = checkAvail(bookIndex);
             boolean uElig = checkElig();
@@ -154,7 +158,7 @@ public class Session {
             // RESP 17
 
 
-            if (bAvail && checkElig()) {
+            if (bAvail && uElig) {
                 // update book
                 LocalDateTime date = borrowedBook.setDueDateNow();
                 // update record
@@ -167,18 +171,51 @@ public class Session {
                 // return
                 menu.mainMenu(input,output);
 
+                // TODO pop queue
+
             } else {
                 // show hold menu
 
-                // ask if they wish to hold instead
-                // get pick
-                selection = menu.getPick(input, output, 1, 2);
-
-                if (selection == 1) {
+                // book is already on hold by user
+                if (borrowedBook.checkQueue(currUser)) {
+                    output.println("You already have a hold on this book.");
 
                 }
+                // book is already checked out by user
+                else if (currUser.getBorrowed().contains(borrowedBook)) {
+                    output.println("You already have this booked checked out.");
+                }
 
-
+                // book is checked out by someone else
+                else if (uElig) {
+                    output.println("The book you selected is checked out by someone else. Would you like to place a hold? ");
+                    output.println("1: Yes\n2. No");
+                    selection = menu.getPick(input, output, 1,2);
+                    if (selection == -1) {
+                        return;
+                    }
+                    if (selection == 1) {
+                        borrowedBook.placeHold(currUser);
+                        output.println("You have been added to the hold queue.");
+                    } else {
+                        borrow(input,output);
+                    }
+                } else if (bAvail && !uElig) {
+                    output.println("You are currently at your borrow limit. You cannot borrow any more books at this time. Would you like to place a hold instead?");
+                    output.println("1: Yes\n2. No");
+                    selection = menu.getPick(input, output, 1,2);
+                    if (selection == -1) {
+                        return;
+                    }
+                    if (selection == 1) {
+                        borrowedBook.placeHold(currUser);
+                        output.println("You have been added to the hold queue.");
+                    } else {
+                        borrow(input,output);
+                    }
+                } else {
+                    output.println("Something went wrong. Returning to main menu");
+                }
             }
         } else {
             return; // will this work in main?

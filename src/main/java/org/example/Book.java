@@ -1,6 +1,7 @@
 package org.example;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Queue;
 import java.util.LinkedList;
 
@@ -76,9 +77,15 @@ public class Book {
     }
 
     public void placeHold(User usr) {
-        if (!holdQueue.contains(usr)) {
-            holdQueue.add(usr);
-            setStatus(StatusCode.HOLD);
+        if (status.equals(StatusCode.CHECKED)) {
+            if (!holdQueue.contains(usr)) {
+                holdQueue.add(usr);
+            }
+        } else {
+            if (!holdQueue.contains(usr)) {
+                holdQueue.add(usr);
+                setStatus(StatusCode.HOLD);
+            }
         }
     }
 
@@ -89,5 +96,9 @@ public class Book {
         return holdQueue.peek();
     }
     // return - clear CHECKED
+
+    public boolean checkQueue(User usr) {
+        return holdQueue.contains(usr);
+    }
 
 }

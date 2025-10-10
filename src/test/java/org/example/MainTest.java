@@ -1219,7 +1219,7 @@ public class MainTest {
 
         session.borrow(new Scanner(srInput), new PrintWriter(output));
 
-        if (!output.toString().contains("would you like to place a hold?")) {
+        if (!output.toString().contains("Would you like to place a hold?")) {
             assert false;
         }
     }
@@ -1297,7 +1297,7 @@ public class MainTest {
 
         session.borrow(new Scanner(srInput), new PrintWriter(output));
 
-        if (!output.toString().contains("already have this booked checked out")) {
+        if (!output.toString().contains("borrow limit. You cannot borrow any more books at this time")) {
             assert false;
         }
     }
@@ -1313,6 +1313,7 @@ public class MainTest {
         Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
         session.setUser(testUsr);
+        catalogue.getBook("Stealth").setDueDateNow();
 
         String input = "15\n1\n1\n"; // inputs required to borrow stealth
         StringReader srInput = new StringReader(input);
