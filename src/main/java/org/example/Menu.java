@@ -21,6 +21,7 @@ public class Menu {
             Book thisBook = catalogue.getBook(i);
             if (thisBook.getStatusCode().equals(Book.StatusCode.AVAIL) || thisBook.getStatusCode().equals(Book.StatusCode.HOLD)) {
                 output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - " + thisBook.getStatusCode().getLabel());
+                // TODO: if ON HOLD by current user label as available
             } else if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) { // could be else
                 // print available on
                 output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - " + thisBook.getStatusCode().getLabel() + " - Available on " + thisBook.getDue().toString());

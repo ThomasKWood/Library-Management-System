@@ -1199,4 +1199,130 @@ public class MainTest {
             assert false;
         }
     }
+
+    @Test
+    @DisplayName("Borrow - hold - allow hold")
+    void RESP_16_test_01() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+        catalogue.getBook("Stealth").setDueDateNow();
+
+        String input = "15\n1\n1\n"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        if (!output.toString().contains("would you like to place a hold?")) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Borrow - hold - hold already placed")
+    void RESP_16_test_03() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+        Book testBook = catalogue.getBook("Stealth");
+        testBook.setDueDateNow();
+        testBook.placeHold(testUsr);
+
+
+        String input = "15\n1\n1\n"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        if (!output.toString().contains("have a hold on this book")) {
+            assert false;
+        }
+    }
+    @Test
+    @DisplayName("Borrow - hold - already checked out")
+    void RESP_16_test_04() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+        Book testBook = catalogue.getBook("Stealth");
+        testBook.setDueDateNow();
+        testUsr.addBorrowed(testBook);
+
+        String input = "15\n1\n1\n"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        if (!output.toString().contains("already have this booked checked out")) {
+            assert false;
+        }
+    }
+    @Test
+    @DisplayName("Borrow - hold - book available but at limit")
+    void RESP_16_test_05() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+        Book testBook = catalogue.getBook("Stealth");
+        testUsr.addBorrowed(catalogue.getBook(0));
+        testUsr.addBorrowed(catalogue.getBook(1));
+        testUsr.addBorrowed(catalogue.getBook(2));
+
+        String input = "15\n1\n1\n"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        if (!output.toString().contains("already have this booked checked out")) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Borrow - hold - added to queue after hold transaction")
+    void RESP_16_test_06() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        String input = "15\n1\n1\n"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.borrow(new Scanner(srInput), new PrintWriter(output));
+
+        if (!catalogue.getBook("Stealth").firstQueue().getUsername().equals("thomaswood")) {
+            assert false;
+        }
+    }
+
 }
