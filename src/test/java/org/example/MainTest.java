@@ -1166,9 +1166,7 @@ public class MainTest {
         User testUsr = users.getUser("thomaswood");
         session.setUser(testUsr);
 
-        catalogue.getBook("Stealth").setDueDateNow();
-
-        String input = "15\n1\n"; // inputs required to borrow stealth
+        String input = "15\n1\n1\n"; // inputs required to borrow stealth
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
@@ -1190,8 +1188,6 @@ public class MainTest {
         Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
         session.setUser(testUsr);
-
-        catalogue.getBook("Stealth").setDueDateNow();
 
         String input = "15\n1\n1\n"; // inputs required to borrow stealth
         StringReader srInput = new StringReader(input);

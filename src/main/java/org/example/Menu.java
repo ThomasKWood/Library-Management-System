@@ -51,7 +51,6 @@ public class Menu {
         } else {
             output.println("You have selected No. Bringing you back to main menu.");
         }
-        output.flush();
         return selected;
     }
 
@@ -82,5 +81,9 @@ public class Menu {
         return selection;
     }
 
-    //protected
+    public void confirmation(Scanner input, PrintWriter output, Book book) {
+        output.println("You have successfully checked out " + book.getTitle() + " by " + book.getAuthor() + ". It is due on the " + book.setDueDateNow());
+        output.println("Please acknowledge this confirmation by entering 1: ");
+        getPick(input, output, 1,1);
+    }
 }

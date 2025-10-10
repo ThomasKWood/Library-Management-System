@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Scanner;
 
 public class Main {
@@ -23,8 +24,11 @@ public class Main {
 
             switch (selection) {
                 case 1:
-                    menu.borrowMenu(input, output, session.getUser(), catalogue);
+                    session.borrow(input, output);
+                    output.flush();
             }
+
+            output = new PrintWriter(System.out);
         }
 
     }

@@ -163,7 +163,9 @@ public class Session {
                 currUser.addBorrowed(borrowedBook);
                 // present info to user
                 // get ack
+                menu.confirmation(input, output, borrowedBook);
                 // return
+                menu.mainMenu(input,output);
 
             } else {
                 // show hold menu
