@@ -1338,13 +1338,13 @@ public class MainTest {
         User testUsr = users.getUser("thomaswood");
         session.setUser(testUsr);
 
-        String input = "15\n1\n1\n"; // inputs required to borrow stealth
+        String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
         session.returnBook(new Scanner(srInput), new PrintWriter(output));
 
-        if (!output.toString().contains("no books borrowed")) {
+        if (!output.toString().contains("no books currently checked out")) {
             assert false;
         }
     }
@@ -1369,16 +1369,16 @@ public class MainTest {
         testUsr.addBorrowed(book2);
 
 
-        String input = "15\n1\n1\n"; // inputs required to borrow stealth
+        String input = "1\n1\n"; // inputs required to return stealth
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
         session.returnBook(new Scanner(srInput), new PrintWriter(output));
 
-        if (!output.toString().contains("Stealth due on " + date1.toString())) {
+        if (!output.toString().contains("Stealth by Peter J. Westwick due on " + date1.toString())) {
             assert false;
         }
-        if (!output.toString().contains("Mickey7 due on" + date2.toString())) {
+        if (!output.toString().contains("Mickey7 by Edward Ashton due on " + date2.toString())) {
             assert false;
         }
     }
@@ -1403,19 +1403,25 @@ public class MainTest {
         testUsr.addBorrowed(book2);
 
 
-        String input = "1\n"; // inputs required to borrow stealth
+        String input = "1\n1\n"; // inputs required to borrow stealth
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
         session.returnBook(new Scanner(srInput), new PrintWriter(output));
 
-        if (!output.toString().contains("Would you like to return this book?")) {
+        if (!output.toString().contains("You have selected:")) {
+            assert false;
+        }
+        if (!output.toString().contains("Are you sure you would like to proceed with returning this book?")) {
             assert false;
         }
         if (!output.toString().contains("Yes")) {
             assert false;
         }
         if (!output.toString().contains("No")) {
+            assert false;
+        }
+        if (!output.toString().contains("Processing return")) {
             assert false;
         }
     }

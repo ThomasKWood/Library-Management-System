@@ -232,6 +232,24 @@ public class Session {
     }
 
     public void returnBook(Scanner input, PrintWriter output) {
-
+        if (currUser.getBorrowed().isEmpty()) {
+            output.println("You have no books currently checked out. Returning to main menu.");
+        } else {
+            output.println("Here are the books you have checked out. Pick one you would like to return:");
+            int i = 1;
+            for (Book book : currUser.getBorrowed()) {
+                output.println(i + ". " + book.getTitle() + " by " + book.getAuthor() + " due on " + book.setDueDateNow().toString());
+                i++;
+            }
+            int selection = menu.getPick(input, output, 1, i);
+            if (selection == -1) {
+                return;
+            }
+            selection = menu.bookDetailsReturn(input, output, currUser.getBorrowed().get(selection-1));
+            if (selection == -1) {
+                return;
+            }
+            // do return process
+        }
     }
 }
