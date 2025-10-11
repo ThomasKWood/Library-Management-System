@@ -230,4 +230,8 @@ public class Session {
     public ArrayList<String> getRecord() {
         return record;
     }
+
+    public void returnBook(Scanner input, PrintWriter output) {
+
+    }
 }

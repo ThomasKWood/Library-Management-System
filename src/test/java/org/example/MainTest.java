@@ -1326,4 +1326,97 @@ public class MainTest {
         }
     }
 
+    @Test
+    @DisplayName("Present borrowed - no books borrowed")
+    void RESP_17_test_01() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+
+        Session session = new Session(catalogue, users);
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        String input = "15\n1\n1\n"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+
+        if (!output.toString().contains("no books borrowed")) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Present borrowed - books borrowed")
+    void RESP_17_test_02() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+        Session session = new Session(catalogue, users);
+
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+        Book book1 = catalogue.getBook("Stealth");
+        LocalDateTime date1 = book1.setDueDateNow();
+        Book book2 = catalogue.getBook("Mickey7");
+        LocalDateTime date2 = book2.setDueDateNow();
+
+        testUsr.addBorrowed(book1);
+        testUsr.addBorrowed(book2);
+
+
+        String input = "15\n1\n1\n"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+
+        if (!output.toString().contains("Stealth due on " + date1.toString())) {
+            assert false;
+        }
+        if (!output.toString().contains("Mickey7 due on" + date2.toString())) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Present borrowed - book selected")
+    void RESP_17_test_03() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+        Session session = new Session(catalogue, users);
+
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+        Book book1 = catalogue.getBook("Stealth");
+        LocalDateTime date1 = book1.setDueDateNow();
+        Book book2 = catalogue.getBook("Mickey7");
+        LocalDateTime date2 = book2.setDueDateNow();
+
+        testUsr.addBorrowed(book1);
+        testUsr.addBorrowed(book2);
+
+
+        String input = "1\n"; // inputs required to borrow stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+
+        if (!output.toString().contains("Would you like to return this book?")) {
+            assert false;
+        }
+        if (!output.toString().contains("Yes")) {
+            assert false;
+        }
+        if (!output.toString().contains("No")) {
+            assert false;
+        }
+    }
 }
