@@ -245,11 +245,15 @@ public class Session {
             if (selection == -1) {
                 return;
             }
-            selection = menu.bookDetailsReturn(input, output, currUser.getBorrowed().get(selection-1));
+            Book returnBook = currUser.getBorrowed().get(selection-1);
+            selection = menu.bookDetailsReturn(input, output, returnBook);
             if (selection == -1) {
                 return;
             }
             // do return process
+
+
+
         }
     }
 }
