@@ -95,10 +95,21 @@ public class Book {
     public User firstQueue() {
         return holdQueue.peek();
     }
-    // return - clear CHECKED
+
+    public void returnBook() {
+        this.due = null;
+        if (holdQueue.isEmpty()) {
+            setStatus(StatusCode.AVAIL);
+        } else {
+            setStatus(StatusCode.HOLD);
+        }
+    }
 
     public boolean checkQueue(User usr) {
         return holdQueue.contains(usr);
     }
 
+    public void popFirst() {
+        holdQueue.poll();
+    }
 }

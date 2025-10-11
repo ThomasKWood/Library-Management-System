@@ -172,7 +172,9 @@ public class Session {
                 menu.mainMenu(input,output);
 
                 // TODO pop queue
-
+                if (!borrowedBook.getAvailability()) {
+                    borrowedBook.popFirst();
+                }
             } else {
                 // show hold menu
 
@@ -251,9 +253,9 @@ public class Session {
                 return;
             }
             // do return process
-
-
-
+            currUser.getBorrowed().remove(returnBook);
+            returnBook.returnBook();
+            this.record.add(returnBook.getTitle()+" returned on " + LocalDateTime.now().toString());
         }
     }
 }

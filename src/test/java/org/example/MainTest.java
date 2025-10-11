@@ -1513,8 +1513,12 @@ public class MainTest {
 
         session.returnBook(new Scanner(srInput), new PrintWriter(output));
 
-        if (!session.getRecord().contains("Stealth returned")) {
-            assert false;
+        boolean assertValue = false;
+        for (String record : session.getRecord()) {
+            if (record.contains("Stealth returned")) {
+                assertValue = true;
+            }
         }
+        assert assertValue;
     }
 }
