@@ -1605,4 +1605,33 @@ public class MainTest {
             assert false;
         }
     }
+
+    @Test
+    @DisplayName("Logout - check if login appears")
+    void RESP_20_test_01() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+        Session session = new Session(catalogue, users);
+
+        User testUsr = users.getUser("thomaswood");
+        session.setUser(testUsr);
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        // clear session and login as new user
+        input = "Yes\n";
+        srInput = new StringReader(input);
+        output = new StringWriter();
+
+        session.logout(new Scanner(srInput), new PrintWriter(output));
+
+        // check output
+        if (!output.toString().contains("lease enter your username")) {
+            assert false;
+        }
+    }
 }
