@@ -60,7 +60,6 @@ public class Session {
         } else {
             output.println("You are already logged in as: " + this.currUser.getUsername());
         }
-        output.flush();
     }
 
     public boolean signedIn() {
@@ -83,7 +82,7 @@ public class Session {
             output.println("Input not recognized");
             logout(input, output);
         }
-        output.flush();
+        login(input, output);
     }
 
     public User getUser() {
