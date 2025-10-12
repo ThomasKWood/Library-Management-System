@@ -48,6 +48,7 @@ public class Session {
                     if (user.passwordCorrect(pass)) {
                         this.currUser = user; // TODO replace with setter
                         output.println("Welcome " + this.currUser.getUsername());
+                        prompt(input, output);
                     }
                 }
             }
@@ -104,7 +105,7 @@ public class Session {
                 Book thisBook = library.getBook(thisTitle);
 
                 // check valid & available
-                if (thisBook != null && thisBook.getAvailability()) {
+                if (thisBook != null && checkAvail(thisBook)) {
                     output.println(thisTitle + " is available!");
                     sent++;
                 }
@@ -118,6 +119,26 @@ public class Session {
 
     public boolean checkAvail(int bookIndex) {
         Book thisBook = library.getBook(bookIndex);
+
+        if (thisBook.getAvailability()) {
+            return true;
+        } else {
+            if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) {
+                return false; // book is checked out
+            } else if (thisBook.firstQueue() != null) {
+                // check hold queue to see if current signed in is infront
+                if (thisBook.firstQueue().getUsername().equals(currUser.getUsername())) {
+                    return true; // currUser is first in hold queue
+                } else {
+                    return false;
+                }
+
+            }
+            return false;
+        }
+    }
+
+    public boolean checkAvail(Book thisBook) {
 
         if (thisBook.getAvailability()) {
             return true;
@@ -256,8 +277,10 @@ public class Session {
             currUser.getBorrowed().remove(returnBook);
             returnBook.returnBook();
             this.record.add(returnBook.getTitle()+" returned on " + LocalDateTime.now().toString());
-            // notify code
-
+            // notify
+            if (returnBook.firstQueue() != null) {
+                returnBook.firstQueue().addNoti(returnBook.getTitle());
+            }
         }
     }
 }

@@ -1589,7 +1589,7 @@ public class MainTest {
         session.returnBook(new Scanner(srInput), new PrintWriter(output));
 
         // clear session and login as new user
-        input = "1\n";
+        input = "Yes\n";
         srInput = new StringReader(input);
         output = new StringWriter();
 
@@ -1601,7 +1601,7 @@ public class MainTest {
         session.login(new Scanner(srInput), new PrintWriter(output));
 
         // check output
-        if (!output.toString().contains("Stealth available")) {
+        if (!output.toString().contains("Stealth is available!")) {
             assert false;
         }
     }
