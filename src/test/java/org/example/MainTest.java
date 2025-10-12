@@ -1521,4 +1521,88 @@ public class MainTest {
         }
         assert assertValue;
     }
+
+    @Test
+    @DisplayName("Hold - On return check proper status - queue is empty")
+    void RESP_19_test_01() {
+        Book bookTest = new Book("Test Book", "Tester");
+        bookTest.placeHold(new User("testuser", "tester"));
+
+        // borrow
+        bookTest.popFirst();
+        bookTest.setDueDateNow();
+
+        // return
+        bookTest.returnBook();
+
+        // check - should be available since queue is empty
+        if (bookTest.getStatusCode().equals(Book.StatusCode.CHECKED) || bookTest.getStatusCode().equals(Book.StatusCode.HOLD)) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Hold - On return check proper status - queue is not empty")
+    void RESP_19_test_02() {
+        Book bookTest = new Book("Test Book", "Tester");
+        bookTest.placeHold(new User("testuser", "tester"));
+        bookTest.placeHold(new User("testuser2", "tester"));
+
+        // borrow
+        bookTest.popFirst();
+        bookTest.setDueDateNow();
+
+        // return
+        bookTest.returnBook();
+
+        // check - should be status hold since one more person is in queue
+        if (!bookTest.getStatusCode().equals(Book.StatusCode.HOLD)) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Hold - check for notification")
+    void RESP_19_test_03() {
+        InitializeLibrary initLib = new InitializeLibrary();
+        InitializeUsers initUsr = new InitializeUsers();
+        Catalogue catalogue = initLib.initLibrary();
+        Users users = initUsr.initUsers();
+        Session session = new Session(catalogue, users);
+
+        User testUsr = users.getUser("thomaswood");
+        User testUsr2 = users.getUser("jeff");
+        Book book1 = catalogue.getBook("Stealth");
+        book1.setDueDateNow();
+        testUsr.addBorrowed(book1);
+
+        // setup book for noti
+        book1.placeHold(testUsr2);
+
+        // simulate return
+        session.setUser(testUsr);
+
+        String input = "1\n1\n"; // inputs required to return stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+
+        // clear session and login as new user
+        input = "1\n";
+        srInput = new StringReader(input);
+        output = new StringWriter();
+
+        session.logout(new Scanner(srInput), new PrintWriter(output));
+
+        input = "jeff\n6789\n";
+        srInput = new StringReader(input);
+        output = new StringWriter();
+        session.login(new Scanner(srInput), new PrintWriter(output));
+
+        // check output
+        if (!output.toString().contains("Stealth available")) {
+            assert false;
+        }
+    }
 }

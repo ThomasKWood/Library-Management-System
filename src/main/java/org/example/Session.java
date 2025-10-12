@@ -256,6 +256,8 @@ public class Session {
             currUser.getBorrowed().remove(returnBook);
             returnBook.returnBook();
             this.record.add(returnBook.getTitle()+" returned on " + LocalDateTime.now().toString());
+            // notify code
+
         }
     }
 }
