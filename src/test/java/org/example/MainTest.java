@@ -1428,6 +1428,31 @@ public class MainTest {
     }
 
     @Test
+    @DisplayName("Return cancelled")
+    void RESP_18_test_04() {
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
+
+        User testUsr = users.getUser("thomaswood");
+        app.setUser(testUsr);
+        Book book1 = catalogue.getBook("Stealth");
+        Book book2 = catalogue.getBook("Mickey7");
+
+        testUsr.addBorrowed(book1);
+        testUsr.addBorrowed(book2);
+
+
+        String input = "1\n2\n"; // inputs required to cancel return on stealth
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        app.returnBook(new Scanner(srInput), new PrintWriter(output));
+
+        assert !output.toString().contains("Stealth returned");
+    }
+
+    @Test
     @DisplayName("Hold - On return check proper status - queue is empty")
     void RESP_19_test_01() {
         Book bookTest = new Book("Test Book", "Tester");
