@@ -305,7 +305,7 @@ public class Main {
             }
             Book returnBook = this.currUser.getBorrowed().get(selection-1);
             selection = bookDetailsReturn(input, output, returnBook);
-            if (selection == -1) {
+            if (selection == -1 || selection == 2) {
                 return;
             }
             // do return process
