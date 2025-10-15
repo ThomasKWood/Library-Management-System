@@ -333,9 +333,19 @@ public class Main {
         for (int i = 0; i < catalogue.getSize(); i++) {
             Book thisBook = catalogue.getBook(i);
             if (thisBook.getStatusCode().equals(Book.StatusCode.AVAIL) || thisBook.getStatusCode().equals(Book.StatusCode.HOLD)) {
-                output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - " + thisBook.getStatusCode().getLabel());
-                output.flush();
                 // TODO: if ON HOLD by current user label as available
+                if (thisBook.getStatusCode().equals(Book.StatusCode.HOLD) && thisBook.checkQueue(user)) {
+                    output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - Available (on hold for you)");
+                    output.flush();
+                    continue;
+                } else if (thisBook.getStatusCode().equals(Book.StatusCode.HOLD)) {
+                    output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - On Hold");
+                    output.flush();
+                    continue;
+                } else {
+                    output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - Available");
+                    output.flush();
+                }
             } else if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) { // could be else
                 // print available on
                 output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - " + thisBook.getStatusCode().getLabel() + " - Available on " + thisBook.getDue().toString());
