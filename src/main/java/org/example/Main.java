@@ -80,6 +80,7 @@ public class Main {
                         output.println("Welcome " + this.currUser.getUsername());
                         output.flush();
                         prompt(output);
+                        break;
                     }
                 }
             }

@@ -1559,7 +1559,6 @@ public class MainTest {
             assert false;
         }
     }
-    // TODO return clicking no still returns?
     // TODO signing out and logging as someone else says already logged in?
     // TODO sometimes number inputs need to be entered twice?
     // TODO signout uses Yes or No. should be 1 or 2
