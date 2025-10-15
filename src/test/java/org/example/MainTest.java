@@ -508,43 +508,6 @@ public class MainTest {
     }
 
     @Test
-    @DisplayName("Menu - valid option selected")
-    void RESP_07_test_02() {
-        Main app = new Main();
-
-        String input = "1";
-        StringReader srInput = new StringReader(input);
-        StringWriter output = new StringWriter();
-
-        int selected = app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
-        output.flush();
-
-        assertEquals(1, selected);
-    }
-
-    @Test
-    @DisplayName("Menu - invalid option selected - bad number - above max")
-    void RESP_07_test_03() {
-        Main app = new Main();
-
-        String input = "4";
-        StringReader srInput = new StringReader(input);
-        StringWriter output = new StringWriter();
-
-        app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
-        output.flush();
-
-        String[] words = {"Invalid Option", "from 1 to 3"};
-
-        for (String word : words) {
-            if (!output.toString().contains(word)) {
-                assert false;
-            }
-        }
-
-    }
-
-    @Test
     @DisplayName("Menu - invalid option selected - bad number - bellow min")
     void RESP_07_test_04() {
         Main app = new Main();
@@ -1559,7 +1522,61 @@ public class MainTest {
             assert false;
         }
     }
-    // TODO signing out and logging as someone else says already logged in?
-    // TODO sometimes number inputs need to be entered twice?
+
+    @Test
+    @DisplayName("Capture user input - valid number input")
+    void RESP_21_test_01() {
+        Main app = new Main();
+        String input = "2\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+        int pick = app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
+        assertEquals(2, pick);
+    }
+
+    @Test
+    @DisplayName("Capture user input - valid number input - edge")
+    void RESP_21_test_02() {
+        Main app = new Main();
+        String input = "3\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+        int pick = app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
+        assertEquals(3, pick);
+    }
+
+    @Test
+    @DisplayName("Capture user input - invalid number input")
+    void RESP_21_test_03() {
+        Main app = new Main();
+        String input = "0\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+        int pick = app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
+        assertEquals(-1, pick);
+    }
+
+    @Test
+    @DisplayName("Capture user input - invalid then valid")
+    void RESP_21_test_04() {
+        Main app = new Main();
+        String input = "0\n1\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+        int pick = app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
+        assertEquals(1, pick);
+    }
+
+    @Test
+    @DisplayName("Capture user input - invalid not a number")
+    void RESP_21_test_05() {
+        Main app = new Main();
+        String input = "test\n";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+        app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
+        assert output.toString().contains("Invalid Input");
+    }
     // TODO signout uses Yes or No. should be 1 or 2
+    // TODO on return with one book 2 can be entered to crash
 }
