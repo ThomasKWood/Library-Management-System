@@ -2,6 +2,7 @@ package org.example;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.StringReader;
@@ -17,7 +18,7 @@ public class MainTest {
 
     @Test
     @DisplayName("Check Library is 20")
-    void RESP_01_test_01(){
+    void RESP_01_test_01() {
         InitializeLibrary lib = new InitializeLibrary();
         Catalogue catalogue = lib.initLibrary();
         int size = catalogue.getSize();
@@ -140,9 +141,6 @@ public class MainTest {
         InitializeUsers sampleUsers = new InitializeUsers();
         Users users = sampleUsers.initUsers();
 
-        // test func
-        //users.getUser("thomaswood").addBorrowed(new Book("test","test"));
-
         for (User user : users.getUsers()) {
             if (!user.getBorrowed().isEmpty()) {
                 assert false;
@@ -153,16 +151,13 @@ public class MainTest {
     @Test
     @DisplayName("Test Login - Empty value")
     void RESP_03_test_01() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
-
+        Main app = new Main();
         String input = "\n\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("cannot be blank")) {
             assert false;
@@ -172,16 +167,15 @@ public class MainTest {
     @Test
     @DisplayName("Test prompts for username and password")
     void RESP_03_test_02() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "\n\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("enter your username") && output.toString().contains("enter your password")) {
             assert false;
@@ -192,16 +186,15 @@ public class MainTest {
     @Test
     @DisplayName("Test Login - Valid")
     void RESP_04_test_01() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "thomaswood\n1234\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("Welcome")) {
             assert false;
@@ -211,16 +204,15 @@ public class MainTest {
     @Test
     @DisplayName("Test Login - Incorrect username")
     void RESP_04_test_02() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "validusername12\n1234\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("incorrect")) {
             assert true;
@@ -230,16 +222,15 @@ public class MainTest {
     @Test
     @DisplayName("Test Login - Incorrect password")
     void RESP_04_test_03() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "thomaswood\n1235\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("incorrect")) {
             assert true;
@@ -249,19 +240,18 @@ public class MainTest {
     @Test
     @DisplayName("Test Login - Already logged in")
     void RESP_04_test_04() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "thomaswood\n1234\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
         output = new StringWriter();
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
         if (!output.toString().contains("already")) {
             assert false;
         }
@@ -270,16 +260,15 @@ public class MainTest {
     @Test
     @DisplayName("Test retry")
     void RESP_04_test_05() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "thomaswood\n1235\nthomaswood\n1234\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("incorrect") && output.toString().contains("Welcome")) {
             assert false;
@@ -289,11 +278,10 @@ public class MainTest {
     @Test
     @DisplayName("Test that session is null on initialize")
     void RESP_05_test_01() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
-        if (session.signedIn()) {
+        if (app.signedIn()) {
             assert false;
         }
     }
@@ -301,18 +289,17 @@ public class MainTest {
     @Test
     @DisplayName("Test that session is set once logged in")
     void RESP_05_test_02() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "thomaswood\n1234\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
-        if (!session.signedIn()) {
+        if (!app.signedIn()) {
             assert false;
         }
     }
@@ -320,18 +307,17 @@ public class MainTest {
     @Test
     @DisplayName("Test that session username is correct")
     void RESP_05_test_03() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "thomaswood\n1234\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
-        if (!session.getUser().getUsername().equals("thomaswood")) {
+        if (!app.getUser().getUsername().equals("thomaswood")) {
             assert false;
         }
     }
@@ -339,46 +325,45 @@ public class MainTest {
     @Test
     @DisplayName("Test that session is cleared on logout")
     void RESP_05_test_04() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "thomaswood\n1234\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
         input = "Yes\n";
         srInput = new StringReader(input);
         output = new StringWriter();
-        session.logout(new Scanner(srInput), new PrintWriter(output));
+        app.logout(new Scanner(srInput), new PrintWriter(output));
 
-        if (session.signedIn()) {
+        if (app.signedIn()) {
             assert false;
         }
     }
+
     @Test
     @DisplayName("Test user decides to cancel logout")
     void RESP_05_test_05() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "thomaswood\n1234\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
 
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
         input = "No\n";
         srInput = new StringReader(input);
         output = new StringWriter();
-        session.logout(new Scanner(srInput), new PrintWriter(output));
+        app.logout(new Scanner(srInput), new PrintWriter(output));
 
-        if (!session.signedIn()) {
+        if (!app.signedIn()) {
             assert false;
         }
     }
@@ -386,33 +371,34 @@ public class MainTest {
     @Test
     @DisplayName("Test user tries logout before logging in")
     void RESP_05_test_06() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(null, users);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "No\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.logout(new Scanner(srInput), new PrintWriter(output));
+        app.logout(new Scanner(srInput), new PrintWriter(output));
 
-        if (session.signedIn()) {
+        if (app.signedIn()) {
             assert false;
         }
     }
+
     @Test
     @DisplayName("Notifications - no one logged in")
     void RESP_06_test_01() {
-        Session session = new Session(null, null);
+        Main app = new Main();
+        //app.mainInit();
 
         String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.prompt(new Scanner(srInput), new PrintWriter(output));
+        app.prompt(new Scanner(srInput), new PrintWriter(output));
         output.flush();
 
-        if (!output.toString().contains("ot logged in")){
+        if (!output.toString().contains("ot logged in")) {
             assert false;
         }
     }
@@ -420,25 +406,19 @@ public class MainTest {
     @Test
     @DisplayName("Notifications for when books become available - no notifications")
     void RESP_06_test_02() {
-        InitializeLibrary lib = new InitializeLibrary();
-        Catalogue catalogue = lib.initLibrary();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(catalogue, users);
-
-        // add in user nofitcations
-        // not for this one
-
+        Main app = new Main();
+        //app.mainInit();
+        Users users = app.getUsers();
 
         String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.setUser(users.getUser("thomaswood")); // skip login
-        session.prompt(new Scanner(srInput), new PrintWriter(output));
+        app.setUser(users.getUser("thomaswood")); // skip login
+        app.prompt(new Scanner(srInput), new PrintWriter(output));
         output.flush();
 
-        if (!output.toString().contains("o notifications")){
+        if (!output.toString().contains("o notifications")) {
             assert false;
         }
     }
@@ -446,11 +426,8 @@ public class MainTest {
     @Test
     @DisplayName("Notifications for when books become available - valid books")
     void RESP_06_test_03() {
-        InitializeLibrary lib = new InitializeLibrary();
-        Catalogue catalogue = lib.initLibrary();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
 
         // add in user nofitcations
         users.getUser("thomaswood").addNoti("Stealth");
@@ -460,14 +437,14 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.setUser(users.getUser("thomaswood")); // skip login
-        session.prompt(new Scanner(srInput), new PrintWriter(output));
+        app.setUser(users.getUser("thomaswood")); // skip login
+        app.prompt(new Scanner(srInput), new PrintWriter(output));
         output.flush();
 
-        if (!output.toString().contains("Stealth is available")){
+        if (!output.toString().contains("Stealth is available")) {
             assert false;
         }
-        if (!output.toString().contains("Mickey7 is available")){
+        if (!output.toString().contains("Mickey7 is available")) {
             assert false;
         }
     }
@@ -475,11 +452,9 @@ public class MainTest {
     @Test
     @DisplayName("Notifications for when books become available - invalid books - book isnt available")
     void RESP_06_test_04() {
-        InitializeLibrary lib = new InitializeLibrary();
-        Catalogue catalogue = lib.initLibrary();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         // set not available
         catalogue.getBook("Stealth").setDueDateNow();
@@ -491,11 +466,11 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.setUser(users.getUser("thomaswood")); // skip login
-        session.prompt(new Scanner(srInput), new PrintWriter(output));
+        app.setUser(users.getUser("thomaswood")); // skip login
+        app.prompt(new Scanner(srInput), new PrintWriter(output));
         output.flush();
 
-        if (!output.toString().contains("o notifications")){
+        if (!output.toString().contains("o notifications")) {
             assert false;
         }
     }
@@ -503,11 +478,8 @@ public class MainTest {
     @Test
     @DisplayName("Notifications for when books become available - invalid books - book doesnt exist")
     void RESP_06_test_05() {
-        InitializeLibrary lib = new InitializeLibrary();
-        Catalogue catalogue = lib.initLibrary();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
 
         // add in user nofitcations
         users.getUser("thomaswood").addNoti("Mark Carney's Downtown Ottawa Adventure");
@@ -516,11 +488,11 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.setUser(users.getUser("thomaswood")); // skip login
-        session.prompt(new Scanner(srInput), new PrintWriter(output));
+        app.setUser(users.getUser("thomaswood")); // skip login
+        app.prompt(new Scanner(srInput), new PrintWriter(output));
         output.flush();
 
-        if (!output.toString().contains("o notifications")){
+        if (!output.toString().contains("o notifications")) {
             assert false;
         }
     }
@@ -528,13 +500,13 @@ public class MainTest {
     @Test
     @DisplayName("Menu - main menu options presented")
     void RESP_07_test_01() {
-        Menu menu = new Menu();
+        Main app = new Main();
 
         String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.mainMenu(new Scanner(srInput), new PrintWriter(output));
+        app.mainMenu(new Scanner(srInput), new PrintWriter(output));
 
         String[] words = {"1.", "2.", "3.", "Borrow", "Return", "Sign-out"};
 
@@ -548,28 +520,28 @@ public class MainTest {
     @Test
     @DisplayName("Menu - valid option selected")
     void RESP_07_test_02() {
-        Menu menu = new Menu();
+        Main app = new Main();
 
         String input = "1";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        int selected = menu.getPick(new Scanner(srInput), new PrintWriter(output), 1,3);
+        int selected = app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
         output.flush();
 
-        assertEquals(1,selected);
+        assertEquals(1, selected);
     }
 
     @Test
     @DisplayName("Menu - invalid option selected - bad number - above max")
     void RESP_07_test_03() {
-        Menu menu = new Menu();
+        Main app = new Main();
 
         String input = "4";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.getPick(new Scanner(srInput), new PrintWriter(output), 1,3);
+        app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
         output.flush();
 
         String[] words = {"Invalid Option", "from 1 to 3"};
@@ -585,13 +557,13 @@ public class MainTest {
     @Test
     @DisplayName("Menu - invalid option selected - bad number - bellow min")
     void RESP_07_test_04() {
-        Menu menu = new Menu();
+        Main app = new Main();
 
         String input = "0";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.getPick(new Scanner(srInput), new PrintWriter(output), 1,3);
+        app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
         output.flush();
 
         String[] words = {"Invalid Option", "from 1 to 3"};
@@ -607,13 +579,13 @@ public class MainTest {
     @Test
     @DisplayName("Menu - invalid option selected - not a number")
     void RESP_07_test_05() {
-        Menu menu = new Menu();
+        Main app = new Main();
 
         String input = "a";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.getPick(new Scanner(srInput), new PrintWriter(output), 1,3);
+        app.getPick(new Scanner(srInput), new PrintWriter(output), 1, 3);
         output.flush();
 
         String[] words = {"Invalid Input"};
@@ -630,10 +602,9 @@ public class MainTest {
     @Test
     @DisplayName("Borrow Count - no borrowed")
     void RESP_08_test_01() {
-        InitializeLibrary lib = new InitializeLibrary();
-        Catalogue catalogue = lib.initLibrary();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         Menu menu = new Menu();
 
@@ -655,21 +626,18 @@ public class MainTest {
     @Test
     @DisplayName("Borrow Count - some borrowed")
     void RESP_08_test_02() {
-        InitializeLibrary lib = new InitializeLibrary();
-        Catalogue catalogue = lib.initLibrary();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUser = users.getUser("thomaswood");
         testUser.addBorrowed(catalogue.getBook("Skunk Works"));
-
-        Menu menu = new Menu();
 
         String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
 
         String[] words = {"1", "borrowed"};
 
@@ -683,23 +651,20 @@ public class MainTest {
     @Test
     @DisplayName("Borrow Count - at limit")
     void RESP_08_test_03() {
-        InitializeLibrary lib = new InitializeLibrary();
-        Catalogue catalogue = lib.initLibrary();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUser = users.getUser("thomaswood");
         testUser.addBorrowed(catalogue.getBook("Skunk Works"));
         testUser.addBorrowed(catalogue.getBook("Fulcrum"));
         testUser.addBorrowed(catalogue.getBook("No Easy Day"));
 
-        Menu menu = new Menu();
-
         String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
 
         String[] words = {"3", "borrowed"};
 
@@ -713,20 +678,17 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - List Books - all books printed")
     void RESP_09_test_01() {
-        InitializeLibrary lib = new InitializeLibrary();
-        Catalogue catalogue = lib.initLibrary();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUser = users.getUser("thomaswood");
-
-        Menu menu = new Menu();
 
         String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
 
         for (Book book : catalogue.getCatalogue()) {
             if (!output.toString().contains(book.getTitle())) {
@@ -738,36 +700,29 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - List Books - availability check")
     void RESP_09_test_02() {
-        Catalogue catalogue = new Catalogue();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUser = users.getUser("thomaswood");
 
         // test books:
-        Book book1 = new Book("Stealth", "Peter J. Westwick");
-        Book book2 = new Book("No Easy Day", "Matt Bissonnette & Kevin Maurer");
-        Book book3 = new Book("Mickey7", "Edward Ashton");
+        Book book2 = catalogue.getBook("No Easy Day");
+        Book book3 = catalogue.getBook("Mickey7");
 
         book2.setDueDateNow();
         book3.placeHold(users.getUser("thomaswood"));
-
-        catalogue.addBook(book1);
-        catalogue.addBook(book2);
-        catalogue.addBook(book3);
-
-        Menu menu = new Menu();
 
         String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
 
         String[] words = {
-                "1. Stealth by Peter J. Westwick - Available",
-                "2. No Easy Day by Matt Bissonnette & Kevin Maurer - Checked Out - Available on ",
-                "3. Mickey7 by Edward Ashton - On Hold",
+                "Stealth by Peter J. Westwick - Available",
+                "No Easy Day by Matt Bissonnette & Kevin Maurer - Checked Out - Available on ",
+                "Mickey7 by Edward Ashton - On Hold",
         };
 
         for (String word : words) {
@@ -780,24 +735,22 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - List Books - due date check")
     void RESP_09_test_03() {
-        Catalogue catalogue = new Catalogue();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUser = users.getUser("thomaswood");
 
         // test books:
-        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        Book book1 = catalogue.getBook("Stealth");
         LocalDateTime expected = book1.setDueDateNow();
         catalogue.addBook(book1);
-
-        Menu menu = new Menu();
 
         String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
 
         if (!output.toString().contains(expected.toString())) {
             assert false;
@@ -808,19 +761,17 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - Select Book - confirm selected is correct")
     void RESP_10_test_01() {
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
-        Book book1 = new Book("Stealth", "Peter J. Westwick");
-        Catalogue catalogue = new Catalogue();
-        catalogue.addBook(book1);
-        Menu menu = new Menu();
-        String input = "1";
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
+
+        String input = "15";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        int selected = menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), users.getUser("thomaswood"), catalogue);
+        int selected = app.borrowMenu(new Scanner(srInput), new PrintWriter(output), users.getUser("thomaswood"), catalogue);
         output = new StringWriter();
-        menu.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected-1));
+        app.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected - 1));
         if (!output.toString().contains("Stealth")) {
             assert false;
         }
@@ -829,151 +780,118 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - Select Book - user confirmation is correct")
     void RESP_10_test_02() {
-        Catalogue catalogue = new Catalogue();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUser = users.getUser("thomaswood");
 
-        // test books:
-        Book book1 = new Book("Stealth", "Peter J. Westwick");
-        catalogue.addBook(book1);
-
-        Menu menu = new Menu();
-
-        String input = "1";
+        String input = "15\n1\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        int selected = menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+        int selected = app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
         srInput = new StringReader(input);
         output = new StringWriter();
-        selected = menu.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected-1));
+        selected = app.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected - 1));
         assertEquals(1, selected);
     }
 
     @Test
     @DisplayName("Borrow - verify availability - book free")
     void RESP_11_test_01() {
-        Catalogue catalogue = new Catalogue();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
 
         User testUser = users.getUser("thomaswood");
 
-
-
         // test books:
-        Book book1 = new Book("Stealth", "Peter J. Westwick");
-        catalogue.addBook(book1);
+        app.setUser(testUser);
 
-        Session session = new Session(catalogue, users);
-        session.setUser(testUser);
-
-        assert session.checkAvail(0);
+        assert app.checkAvail(14);
     }
 
     @Test
     @DisplayName("Borrow - verify availability - book on hold but this user is first in queue")
     void RESP_11_test_02() {
-        Catalogue catalogue = new Catalogue();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUser = users.getUser("thomaswood");
 
-
-
-        // test books:
-        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        Book book1 = catalogue.getBook("Stealth");
         book1.placeHold(testUser);
         catalogue.addBook(book1);
 
-        Session session = new Session(catalogue, users);
-        session.setUser(testUser);
+        app.setUser(testUser);
 
-        assert session.checkAvail(0);
+        assert app.checkAvail(14);
     }
 
     @Test
     @DisplayName("Borrow - verify availability - book not available - user is not first")
     void RESP_11_test_03() {
-        Catalogue catalogue = new Catalogue();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUser = users.getUser("thomaswood");
 
-
-
         // test books:
-        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        Book book1 = catalogue.getBook("Stealth");
         book1.placeHold(users.getUser("jeff"));
         catalogue.addBook(book1);
 
+        app.setUser(testUser);
 
-        Session session = new Session(catalogue, users);
-        session.setUser(testUser);
-
-        assert !session.checkAvail(0);
+        assert !app.checkAvail(14);
     }
 
     @Test
     @DisplayName("Borrow - verify availability - book not available - checked out")
     void RESP_11_test_04() {
-        Catalogue catalogue = new Catalogue();
-        InitializeUsers sampleUsers = new InitializeUsers();
-        Users users = sampleUsers.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUser = users.getUser("thomaswood");
 
-
-
         // test books:
-        Book book1 = new Book("Stealth", "Peter J. Westwick");
+        Book book1 = catalogue.getBook("Stealth");
         book1.setDueDateNow();
-        catalogue.addBook(book1);
 
-        Session session = new Session(catalogue, users);
-        session.setUser(testUser);
+        app.setUser(testUser);
 
-        assert !session.checkAvail(0);
+        assert !app.checkAvail(14);
     }
 
     @Test
     @DisplayName("Borrow - verify eligibility - not at limit")
     void RESP_12_test_01() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
 
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        app.setUser(users.getUser("thomaswood"));
 
-        Session session = new Session(catalogue, users);
-        session.setUser(users.getUser("thomaswood"));
-
-        assert session.checkElig();
+        assert app.checkElig();
     }
 
     @Test
     @DisplayName("Borrow - verify eligibility - at limit")
     void RESP_12_test_02() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
-
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUsr = users.getUser("thomaswood");
         testUsr.addBorrowed(catalogue.getBook(0));
         testUsr.addBorrowed(catalogue.getBook(1));
         testUsr.addBorrowed(catalogue.getBook(2));
 
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
-        assert !session.checkElig();
+        assert !app.checkElig();
     }
 
     @Test
@@ -992,24 +910,21 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - borrow pass - record check")
     void RESP_14_test_01() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         String input = "15\n1\n";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         boolean assertValue = false;
-        for (String string : session.getRecord()) {
-            if (string.contains("thomaswood borrowed Stealth")){
+        for (String string : app.getRecord()) {
+            if (string.contains("thomaswood borrowed Stealth")) {
                 assertValue = true;
             }
         }
@@ -1019,14 +934,12 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - borrow fail - record check")
     void RESP_14_test_02() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         catalogue.getBook("Stealth").setDueDateNow();
 
@@ -1034,11 +947,11 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         boolean assertValue = true;
-        for (String string : session.getRecord()) {
-            if (string.contains("thomaswood borrowed Stealth")){
+        for (String string : app.getRecord()) {
+            if (string.contains("thomaswood borrowed Stealth")) {
                 assertValue = false;
             }
         }
@@ -1048,14 +961,11 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - borrow pass - account check")
     void RESP_14_test_03() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         String input = "15\n1\n"; // inputs required to borrow stealth
         StringReader srInput = new StringReader(input);
@@ -1066,13 +976,12 @@ public class MainTest {
             assert false;
         }
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         // post borrow check
         if (testUsr.getBorrowed().isEmpty()) {
             assert false;
-        }
-        else if (!testUsr.getBorrowed().getFirst().getTitle().equals("Stealth")) {
+        } else if (!testUsr.getBorrowed().getFirst().getTitle().equals("Stealth")) {
             assert false;
         }
     }
@@ -1080,14 +989,12 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - borrow fail - account check")
     void RESP_14_test_04() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         catalogue.getBook("Stealth").setDueDateNow();
 
@@ -1100,7 +1007,7 @@ public class MainTest {
             assert false;
         }
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         // post borrow check
         if (!testUsr.getBorrowed().isEmpty()) {
@@ -1111,20 +1018,18 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - borrow pass - book check")
     void RESP_14_test_05() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         String input = "15\n1\n"; // inputs required to borrow stealth
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         // post borrow check
         assert !catalogue.getBook("Stealth").getAvailability();
@@ -1133,14 +1038,12 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - borrow fail - book check")
     void RESP_14_test_06() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         catalogue.getBook("Stealth").setDueDateNow();
 
@@ -1148,7 +1051,7 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         // post borrow check
         assert !catalogue.getBook("Stealth").getAvailability();
@@ -1157,20 +1060,17 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - due date presented upon borrow success")
     void RESP_15_test_01() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         String input = "15\n1\n1\n"; // inputs required to borrow stealth
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("You have successfully checked out Stealth by Peter J. Westwick. It is due on the ")) {
             assert false;
@@ -1180,20 +1080,17 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - upon confirmation ack - main menu is presented")
     void RESP_15_test_02() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         String input = "15\n1\n1\n"; // inputs required to borrow stealth
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("MAIN MENU")) {
             assert false;
@@ -1203,21 +1100,19 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - hold - allow hold")
     void RESP_16_test_01() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
         catalogue.getBook("Stealth").setDueDateNow();
 
         String input = "15\n1\n1\n"; // inputs required to borrow stealth
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("Would you like to place a hold?")) {
             assert false;
@@ -1227,14 +1122,12 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - hold - hold already placed")
     void RESP_16_test_03() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
         Book testBook = catalogue.getBook("Stealth");
         testBook.setDueDateNow();
         testBook.placeHold(testUsr);
@@ -1244,23 +1137,22 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("have a hold on this book")) {
             assert false;
         }
     }
+
     @Test
     @DisplayName("Borrow - hold - already checked out")
     void RESP_16_test_04() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
         Book testBook = catalogue.getBook("Stealth");
         testBook.setDueDateNow();
         testUsr.addBorrowed(testBook);
@@ -1269,24 +1161,23 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("already have this booked checked out")) {
             assert false;
         }
     }
+
     @Test
     @DisplayName("Borrow - hold - book available but at limit")
     void RESP_16_test_05() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
-        Book testBook = catalogue.getBook("Stealth");
+        app.setUser(testUsr);
+
         testUsr.addBorrowed(catalogue.getBook(0));
         testUsr.addBorrowed(catalogue.getBook(1));
         testUsr.addBorrowed(catalogue.getBook(2));
@@ -1295,7 +1186,7 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("borrow limit. You cannot borrow any more books at this time")) {
             assert false;
@@ -1305,21 +1196,19 @@ public class MainTest {
     @Test
     @DisplayName("Borrow - hold - added to queue after hold transaction")
     void RESP_16_test_06() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
         catalogue.getBook("Stealth").setDueDateNow();
 
         String input = "15\n1\n1\n"; // inputs required to borrow stealth
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.borrow(new Scanner(srInput), new PrintWriter(output));
+        app.borrow(new Scanner(srInput), new PrintWriter(output));
 
         if (!catalogue.getBook("Stealth").firstQueue().getUsername().equals("thomaswood")) {
             assert false;
@@ -1329,20 +1218,17 @@ public class MainTest {
     @Test
     @DisplayName("Present borrowed - no books borrowed")
     void RESP_17_test_01() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
+        Main app = new Main();
+        Users users = app.getUsers();
 
-        Session session = new Session(catalogue, users);
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+        app.returnBook(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("no books currently checked out")) {
             assert false;
@@ -1352,14 +1238,12 @@ public class MainTest {
     @Test
     @DisplayName("Present borrowed - books borrowed")
     void RESP_17_test_02() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
         Book book1 = catalogue.getBook("Stealth");
         LocalDateTime date1 = book1.setDueDateNow();
         Book book2 = catalogue.getBook("Mickey7");
@@ -1373,7 +1257,7 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+        app.returnBook(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("Stealth by Peter J. Westwick due on " + date1.toString())) {
             assert false;
@@ -1386,18 +1270,14 @@ public class MainTest {
     @Test
     @DisplayName("Present borrowed - book selected")
     void RESP_17_test_03() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
         Book book1 = catalogue.getBook("Stealth");
-        LocalDateTime date1 = book1.setDueDateNow();
         Book book2 = catalogue.getBook("Mickey7");
-        LocalDateTime date2 = book2.setDueDateNow();
 
         testUsr.addBorrowed(book1);
         testUsr.addBorrowed(book2);
@@ -1407,7 +1287,7 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+        app.returnBook(new Scanner(srInput), new PrintWriter(output));
 
         if (!output.toString().contains("You have selected:")) {
             assert false;
@@ -1429,18 +1309,14 @@ public class MainTest {
     @Test
     @DisplayName("Return confirmed - removed from account")
     void RESP_18_test_01() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
         Book book1 = catalogue.getBook("Stealth");
-        LocalDateTime date1 = book1.setDueDateNow();
         Book book2 = catalogue.getBook("Mickey7");
-        LocalDateTime date2 = book2.setDueDateNow();
 
         testUsr.addBorrowed(book1);
         testUsr.addBorrowed(book2);
@@ -1450,7 +1326,7 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+        app.returnBook(new Scanner(srInput), new PrintWriter(output));
         if (testUsr.getBorrowed().contains(book1)) {
             assert false;
         }
@@ -1459,18 +1335,14 @@ public class MainTest {
     @Test
     @DisplayName("Return confirmed - book now available")
     void RESP_18_test_02() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
         Book book1 = catalogue.getBook("Stealth");
-        LocalDateTime date1 = book1.setDueDateNow();
         Book book2 = catalogue.getBook("Mickey7");
-        LocalDateTime date2 = book2.setDueDateNow();
 
         testUsr.addBorrowed(book1);
         testUsr.addBorrowed(book2);
@@ -1480,7 +1352,7 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+        app.returnBook(new Scanner(srInput), new PrintWriter(output));
 
         if (!book1.getAvailability()) {
             assert false;
@@ -1490,18 +1362,14 @@ public class MainTest {
     @Test
     @DisplayName("Return confirmed - record made")
     void RESP_18_test_03() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
         Book book1 = catalogue.getBook("Stealth");
-        LocalDateTime date1 = book1.setDueDateNow();
         Book book2 = catalogue.getBook("Mickey7");
-        LocalDateTime date2 = book2.setDueDateNow();
 
         testUsr.addBorrowed(book1);
         testUsr.addBorrowed(book2);
@@ -1511,10 +1379,10 @@ public class MainTest {
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+        app.returnBook(new Scanner(srInput), new PrintWriter(output));
 
         boolean assertValue = false;
-        for (String record : session.getRecord()) {
+        for (String record : app.getRecord()) {
             if (record.contains("Stealth returned")) {
                 assertValue = true;
             }
@@ -1564,11 +1432,9 @@ public class MainTest {
     @Test
     @DisplayName("Hold - check for notification")
     void RESP_19_test_03() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
 
         User testUsr = users.getUser("thomaswood");
         User testUsr2 = users.getUser("jeff");
@@ -1580,25 +1446,25 @@ public class MainTest {
         book1.placeHold(testUsr2);
 
         // simulate return
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         String input = "1\n1\n"; // inputs required to return stealth
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        session.returnBook(new Scanner(srInput), new PrintWriter(output));
+        app.returnBook(new Scanner(srInput), new PrintWriter(output));
 
         // clear session and login as new user
         input = "Yes\n";
         srInput = new StringReader(input);
         output = new StringWriter();
 
-        session.logout(new Scanner(srInput), new PrintWriter(output));
+        app.logout(new Scanner(srInput), new PrintWriter(output));
 
         input = "jeff\n6789\n";
         srInput = new StringReader(input);
         output = new StringWriter();
-        session.login(new Scanner(srInput), new PrintWriter(output));
+        app.login(new Scanner(srInput), new PrintWriter(output));
 
         // check output
         if (!output.toString().contains("Stealth is available!")) {
@@ -1609,14 +1475,11 @@ public class MainTest {
     @Test
     @DisplayName("Logout - check if login appears")
     void RESP_20_test_01() {
-        InitializeLibrary initLib = new InitializeLibrary();
-        InitializeUsers initUsr = new InitializeUsers();
-        Catalogue catalogue = initLib.initLibrary();
-        Users users = initUsr.initUsers();
-        Session session = new Session(catalogue, users);
+        Main app = new Main();
+        Users users = app.getUsers();
 
         User testUsr = users.getUser("thomaswood");
-        session.setUser(testUsr);
+        app.setUser(testUsr);
 
         String input = "";
         StringReader srInput = new StringReader(input);
@@ -1627,7 +1490,7 @@ public class MainTest {
         srInput = new StringReader(input);
         output = new StringWriter();
 
-        session.logout(new Scanner(srInput), new PrintWriter(output));
+        app.logout(new Scanner(srInput), new PrintWriter(output));
 
         // check output
         if (!output.toString().contains("lease enter your username")) {

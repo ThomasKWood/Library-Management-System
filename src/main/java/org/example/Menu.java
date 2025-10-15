@@ -7,7 +7,8 @@ public class Menu {
 
     public Menu() {};
     public int mainMenu(Scanner input, PrintWriter output) {
-        output.println("\n---------------- MAIN MENU ----------------\n1. Borrow\n2. Return\n3.Sign-out");
+        output.println("\n---------------- MAIN MENU ----------------\n1. Borrow\n2. Return\n3. Sign-out");
+        output.flush();
         int selection = getPick(input, output, 1,3);
         return selection;
     }
@@ -16,14 +17,17 @@ public class Menu {
         output.println("\n---------------- BORROW ----------------");
         output.println("\nYou have " + user.getBorrowed().size() + " books borrowed.");
         output.println("\nSelect a book: ");
+        output.flush();
         for (int i = 0; i < catalogue.getSize(); i++) {
             Book thisBook = catalogue.getBook(i);
             if (thisBook.getStatusCode().equals(Book.StatusCode.AVAIL) || thisBook.getStatusCode().equals(Book.StatusCode.HOLD)) {
                 output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - " + thisBook.getStatusCode().getLabel());
+                output.flush();
                 // TODO: if ON HOLD by current user label as available
             } else if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) { // could be else
                 // print available on
                 output.println(i + 1 + ". " + thisBook.getTitle() + " by " + thisBook.getAuthor() + " - " + thisBook.getStatusCode().getLabel() + " - Available on " + thisBook.getDue().toString());
+                output.flush();
             }
         }
         // get pick
@@ -43,13 +47,16 @@ public class Menu {
         output.println(book.getStatusCode().getLabel());
         output.println("\n Are you sure you would like to proceed with borrowing this book?");
         output.println("1. Yes\n2. No");
-
+        output.flush();
         int selected = getPick(input, output, 1, 2);
 
         if (selected == 1) {
             output.println("You have selected Yes. Proceeding to booking...");
+            output.flush();
         } else if (selected == 0) {
             output.println("You have selected No. Bringing you back to main menu.");
+            output.flush();
+
         }
         return selected;
     }
@@ -60,13 +67,15 @@ public class Menu {
         output.println(book.getAuthor());
         output.println("\n Are you sure you would like to proceed with returning this book?");
         output.println("1. Yes\n2. No");
-
+        output.flush();
         int selected = getPick(input, output, 1, 2);
 
         if (selected == 1) {
             output.println("You have selected Yes. Processing return...");
+            output.flush();
         } else if (selected == 0) {
             output.println("You have selected No. Bringing you back to main menu.");
+            output.flush();
         }
         return selected;
     }
@@ -87,11 +96,13 @@ public class Menu {
             selection = Integer.parseInt(input.nextLine());
         } catch (NumberFormatException e) {
             output.println("Invalid Input - Input was not recognized. Please try again: ");
+            output.flush();
             selection = getPick(input, output, rangeMin, rangeMax);
         }
 
         if (selection < rangeMin || selection > rangeMax) {
             output.println("Invalid Option - Please enter a number that is from " + rangeMin + " to " + rangeMax + ".");
+            output.flush();
             selection = getPick(input, output, rangeMin, rangeMax);
         }
 
@@ -101,6 +112,7 @@ public class Menu {
     public void confirmation(Scanner input, PrintWriter output, Book book) {
         output.println("You have successfully checked out " + book.getTitle() + " by " + book.getAuthor() + ". It is due on the " + book.setDueDateNow());
         output.println("Please acknowledge this confirmation by entering 1: ");
+        output.flush();
         getPick(input, output, 1,1);
     }
 }

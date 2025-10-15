@@ -24,6 +24,7 @@ public class Session {
         //
         if (this.currUser == null) {
             output.println("Please enter your username: ");
+            output.flush();
             String usr;
             if (input.hasNextLine()) {
                 usr = input.nextLine();
@@ -31,6 +32,7 @@ public class Session {
                 return;
             }
             output.println("Please enter your password: ");
+            output.flush();
             String pass;
             if (input.hasNextLine()) {
                 pass = input.nextLine();
@@ -40,6 +42,7 @@ public class Session {
 
             if (usr == null || pass == null || usr.equals("") || pass.equals("")) {
                 output.println("Username or password cannot be blank.");
+                output.flush();
                 login(input, output);
             }
             // good thing this isnt algorithms where time complexity matters
