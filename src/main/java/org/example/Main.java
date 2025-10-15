@@ -1,7 +1,6 @@
 package org.example;
 
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -9,9 +8,9 @@ import java.util.Scanner;
 public class Main {
 
     private User currUser;
-    private Catalogue library;
-    private Users users;
-    private ArrayList<String> record;
+    private final Catalogue library;
+    private final Users users;
+    private final ArrayList<String> record;
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
@@ -45,7 +44,7 @@ public class Main {
         library = lib.initLibrary();
         InitializeUsers sampleUsers = new InitializeUsers();
         users = sampleUsers.initUsers();
-        record = new ArrayList<String>();
+        record = new ArrayList<>();
     }
 
     public void login(Scanner input, PrintWriter output) {
@@ -68,19 +67,19 @@ public class Main {
                 return;
             }
 
-            if (usr == null || pass == null || usr.equals("") || pass.equals("")) {
+            if (usr == null || pass == null || usr.isEmpty() || pass.isEmpty()) {
                 output.println("Username or password cannot be blank.");
                 output.flush();
                 login(input, output);
             }
-            // good thing this isnt algorithms where time complexity matters
+            // good thing this isn't algorithms where time complexity matters
             for (User user : this.users.getUsers()) {
                 if (user.getUsername().equals(usr)) {
                     if (user.passwordCorrect(pass)) {
-                        this.currUser = user; // TODO replace with setter
+                        setUser(user);
                         output.println("Welcome " + this.currUser.getUsername());
                         output.flush();
-                        prompt(input, output);
+                        prompt(output);
                     }
                 }
             }
@@ -96,7 +95,7 @@ public class Main {
         }
     }
 
-    public void prompt(Scanner input, PrintWriter output) {
+    public void prompt(PrintWriter output) {
         if (!signedIn()) {
             output.println("Not logged in!");
             output.flush();
@@ -164,12 +163,8 @@ public class Main {
             if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) {
                 return false; // book is checked out
             } else if (thisBook.firstQueue() != null) {
-                // check hold queue to see if current signed in is infront
-                if (thisBook.firstQueue().getUsername().equals(this.currUser.getUsername())) {
-                    return true; // currUser is first in hold queue
-                } else {
-                    return false;
-                }
+                // check hold queue to see if current signed in is in front
+                return thisBook.firstQueue().getUsername().equals(this.currUser.getUsername()); // currUser is first in hold queue
 
             }
             return false;
@@ -184,12 +179,8 @@ public class Main {
             if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) {
                 return false; // book is checked out
             } else if (thisBook.firstQueue() != null) {
-                // check hold queue to see if current signed in is infront
-                if (thisBook.firstQueue().getUsername().equals(this.currUser.getUsername())) {
-                    return true; // currUser is first in hold queue
-                } else {
-                    return false;
-                }
+                // check hold queue to see if current signed in is in front
+                return thisBook.firstQueue().getUsername().equals(this.currUser.getUsername()); // currUser is first in hold queue
 
             }
             return false;
@@ -210,14 +201,14 @@ public class Main {
         }
 
         if (selection == 1) {
-            boolean bAvail = checkAvail(bookIndex);
-            boolean uElig = checkElig();
+            boolean bAvailable = checkAvail(bookIndex);
+            boolean uEligible = checkElig();
 
             // first check if user already has this book checked
             // RESP 17
 
 
-            if (bAvail && uElig) {
+            if (bAvailable && uEligible) {
                 // update book
                 LocalDateTime date = borrowedBook.setDueDateNow();
                 // update record
@@ -230,7 +221,6 @@ public class Main {
                 // return
                 mainMenu(input,output);
 
-                // TODO pop queue
                 if (!borrowedBook.getAvailability()) {
                     borrowedBook.popFirst();
                 }
@@ -250,7 +240,7 @@ public class Main {
                 }
 
                 // book is checked out by someone else
-                else if (uElig) {
+                else if (uEligible) {
                     output.println("The book you selected is checked out by someone else. Would you like to place a hold? ");
                     output.println("1: Yes\n2. No");
                     output.flush();
@@ -265,7 +255,7 @@ public class Main {
                     } else {
                         borrow(input,output);
                     }
-                } else if (bAvail && !uElig) {
+                } else if (bAvailable) {
                     output.println("You are currently at your borrow limit. You cannot borrow any more books at this time. Would you like to place a hold instead?");
                     output.println("1: Yes\n2. No");
                     output.flush();
@@ -285,10 +275,7 @@ public class Main {
                     output.flush();
                 }
             }
-        } else {
-            return; // will this work in main?
         }
-
     }
 
     public boolean checkElig() {
@@ -324,7 +311,7 @@ public class Main {
             // do return process
             this.currUser.getBorrowed().remove(returnBook);
             returnBook.returnBook();
-            this.record.add(returnBook.getTitle()+" returned on " + LocalDateTime.now().toString());
+            this.record.add(returnBook.getTitle()+" returned on " + LocalDateTime.now());
             // notify
             if (returnBook.firstQueue() != null) {
                 returnBook.firstQueue().addNoti(returnBook.getTitle());
@@ -335,8 +322,7 @@ public class Main {
     public int mainMenu(Scanner input, PrintWriter output) {
         output.println("\n---------------- MAIN MENU ----------------\n1. Borrow\n2. Return\n3. Sign-out");
         output.flush();
-        int selection = getPick(input, output, 1,3);
-        return selection;
+        return getPick(input, output, 1,3);
     }
 
     public int borrowMenu(Scanner input, PrintWriter output, User user, Catalogue catalogue) {
@@ -404,12 +390,6 @@ public class Main {
             output.flush();
         }
         return selected;
-    }
-
-    public int returnMenu(Scanner input, PrintWriter output, User user, Catalogue catalogue) {
-        output.println("");
-        output.flush();
-        return 0;
     }
 
     protected int getPick(Scanner input, PrintWriter output, int rangeMin, int rangeMax) {

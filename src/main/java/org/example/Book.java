@@ -54,7 +54,6 @@ public class Book {
     public boolean getAvailability() {
         return status.isAvailable();
     }
-    // TODO: should this update status to true if due date is passed current date?
 
     public StatusCode getStatusCode() {
         return status;

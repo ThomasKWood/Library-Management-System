@@ -391,11 +391,9 @@ public class MainTest {
         Main app = new Main();
         //app.mainInit();
 
-        String input = "";
-        StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        app.prompt(new Scanner(srInput), new PrintWriter(output));
+        app.prompt(new PrintWriter(output));
         output.flush();
 
         if (!output.toString().contains("ot logged in")) {
@@ -410,12 +408,10 @@ public class MainTest {
         //app.mainInit();
         Users users = app.getUsers();
 
-        String input = "";
-        StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
         app.setUser(users.getUser("thomaswood")); // skip login
-        app.prompt(new Scanner(srInput), new PrintWriter(output));
+        app.prompt(new PrintWriter(output));
         output.flush();
 
         if (!output.toString().contains("o notifications")) {
@@ -433,12 +429,10 @@ public class MainTest {
         users.getUser("thomaswood").addNoti("Stealth");
         users.getUser("thomaswood").addNoti("Mickey7");
 
-        String input = "";
-        StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
         app.setUser(users.getUser("thomaswood")); // skip login
-        app.prompt(new Scanner(srInput), new PrintWriter(output));
+        app.prompt(new PrintWriter(output));
         output.flush();
 
         if (!output.toString().contains("Stealth is available")) {
@@ -462,12 +456,10 @@ public class MainTest {
         // add in user nofitcations
         users.getUser("thomaswood").addNoti("Stealth");
 
-        String input = "";
-        StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
         app.setUser(users.getUser("thomaswood")); // skip login
-        app.prompt(new Scanner(srInput), new PrintWriter(output));
+        app.prompt(new PrintWriter(output));
         output.flush();
 
         if (!output.toString().contains("o notifications")) {
@@ -484,12 +476,10 @@ public class MainTest {
         // add in user nofitcations
         users.getUser("thomaswood").addNoti("Mark Carney's Downtown Ottawa Adventure");
 
-        String input = "";
-        StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
         app.setUser(users.getUser("thomaswood")); // skip login
-        app.prompt(new Scanner(srInput), new PrintWriter(output));
+        app.prompt(new PrintWriter(output));
         output.flush();
 
         if (!output.toString().contains("o notifications")) {
@@ -606,13 +596,11 @@ public class MainTest {
         Users users = app.getUsers();
         Catalogue catalogue = app.getCatalogue();
 
-        Menu menu = new Menu();
-
         String input = "";
         StringReader srInput = new StringReader(input);
         StringWriter output = new StringWriter();
 
-        menu.borrowMenu(new Scanner(srInput), new PrintWriter(output), users.getUser("thomaswood"), catalogue);
+        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), users.getUser("thomaswood"), catalogue);
 
         String[] words = {"0", "borrowed"};
 
@@ -1497,4 +1485,8 @@ public class MainTest {
             assert false;
         }
     }
+    // TODO return clicking no still returns?
+    // TODO signing out and logging as someone else says already logged in?
+    // TODO sometimes number inputs need to be entered twice?
+    // TODO signout uses Yes or No. should be 1 or 2
 }
