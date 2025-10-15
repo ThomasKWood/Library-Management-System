@@ -686,43 +686,8 @@ public class MainTest {
     }
 
     @Test
-    @DisplayName("Borrow - List Books - availability check")
-    void RESP_09_test_02() {
-        Main app = new Main();
-        Users users = app.getUsers();
-        Catalogue catalogue = app.getCatalogue();
-
-        User testUser = users.getUser("thomaswood");
-
-        // test books:
-        Book book2 = catalogue.getBook("No Easy Day");
-        Book book3 = catalogue.getBook("Mickey7");
-
-        book2.setDueDateNow();
-        book3.placeHold(users.getUser("thomaswood"));
-
-        String input = "";
-        StringReader srInput = new StringReader(input);
-        StringWriter output = new StringWriter();
-
-        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
-
-        String[] words = {
-                "Stealth by Peter J. Westwick - Available",
-                "No Easy Day by Matt Bissonnette & Kevin Maurer - Checked Out - Available on ",
-                "Mickey7 by Edward Ashton - On Hold",
-        };
-
-        for (String word : words) {
-            if (!output.toString().contains(word)) {
-                assert false;
-            }
-        }
-    }
-
-    @Test
     @DisplayName("Borrow - List Books - due date check")
-    void RESP_09_test_03() {
+    void RESP_09_test_02() {
         Main app = new Main();
         Users users = app.getUsers();
         Catalogue catalogue = app.getCatalogue();
@@ -744,6 +709,90 @@ public class MainTest {
             assert false;
         }
 
+    }
+
+    @Test
+    @DisplayName("Borrow - List Books - availability check - available")
+    void RESP_09_test_03() {
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
+
+        User testUser = users.getUser("thomaswood");
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        assert output.toString().contains("Stealth by Peter J. Westwick - Available");
+    }
+
+    @Test
+    @DisplayName("Borrow - List Books - availability check - Available for this user")
+    void RESP_09_test_04() {
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
+
+        User testUser = users.getUser("thomaswood");
+
+        // test book:
+        Book book = catalogue.getBook("Mickey7");
+        book.placeHold(users.getUser("thomaswood"));
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        assert output.toString().contains("Mickey7 by Edward Ashton - Available (on hold for you)");
+    }
+
+    @Test
+    @DisplayName("Borrow - List Books - availability check - On Hold")
+    void RESP_09_test_05() {
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
+
+        User testUser = users.getUser("thomaswood");
+
+        // test book:
+        Book book = catalogue.getBook("Mickey7");
+        book.placeHold(users.getUser("jeff"));
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        assert output.toString().contains("Mickey7 by Edward Ashton - On Hold");
+    }
+
+    @Test
+    @DisplayName("Borrow - List Books - availability check - Checked Out")
+    void RESP_09_test_06() {
+        Main app = new Main();
+        Users users = app.getUsers();
+        Catalogue catalogue = app.getCatalogue();
+
+        User testUser = users.getUser("thomaswood");
+
+        // test book:
+        Book book = catalogue.getBook("Mickey7");
+        book.setDueDateNow();
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
+
+        assert output.toString().contains("Mickey7 by Edward Ashton - Checked Out");
     }
 
     @Test
