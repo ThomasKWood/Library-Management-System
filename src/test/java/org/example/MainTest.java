@@ -335,7 +335,7 @@ public class MainTest {
 
         app.login(new Scanner(srInput), new PrintWriter(output));
 
-        input = "Yes\n";
+        input = "1\n";
         srInput = new StringReader(input);
         output = new StringWriter();
         app.logout(new Scanner(srInput), new PrintWriter(output));
@@ -1480,7 +1480,7 @@ public class MainTest {
         app.returnBook(new Scanner(srInput), new PrintWriter(output));
 
         // clear session and login as new user
-        input = "Yes\n";
+        input = "1\n";
         srInput = new StringReader(input);
         output = new StringWriter();
 
@@ -1511,7 +1511,7 @@ public class MainTest {
         StringWriter output = new StringWriter();
 
         // clear session and login as new user
-        input = "Yes\n";
+        input = "1\n";
         srInput = new StringReader(input);
         output = new StringWriter();
 
@@ -1519,6 +1519,32 @@ public class MainTest {
 
         // check output
         if (!output.toString().contains("lease enter your username")) {
+            assert false;
+        }
+    }
+
+    @Test
+    @DisplayName("Logout - confirmation check")
+    void RESP_20_test_02() {
+        Main app = new Main();
+        Users users = app.getUsers();
+
+        User testUsr = users.getUser("thomaswood");
+        app.setUser(testUsr);
+
+        String input = "";
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+
+        // clear session and login as new user
+        input = "";
+        srInput = new StringReader(input);
+        output = new StringWriter();
+
+        app.logout(new Scanner(srInput), new PrintWriter(output));
+
+        // check output
+        if (!output.toString().contains("Are you sure you want to sign out? \n1. Yes\n2. No")) {
             assert false;
         }
     }
