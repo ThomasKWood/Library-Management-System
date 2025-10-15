@@ -127,23 +127,15 @@ public class Main {
     }
 
     public void logout(Scanner input, PrintWriter output) {
-        output.println("Are you sure you want to sign out? Yes/No");
+        output.println("Are you sure you want to sign out? \n1. Yes\n2. No");
         output.flush();
-        String lineIn;
-        if (input.hasNextLine()) {
-            lineIn = input.nextLine();
-        } else {
+        int selection = getPick(input, output, 1,2);
+        if (selection == -1 || selection == 2) {
             return;
         }
-        if (lineIn.contains("Yes")) {
-            this.currUser = null;
-        } else if (lineIn.contains("No")) {
-            return;
-        } else {
-            output.println("Input not recognized");
-            output.flush();
-            logout(input, output);
-        }
+        output.println("Signing out " + this.currUser.getUsername());
+        output.flush();
+        this.currUser = null;
         login(input, output);
     }
 
