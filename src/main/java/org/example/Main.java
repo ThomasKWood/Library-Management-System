@@ -292,7 +292,7 @@ public class Main {
                 output.flush();
                 i++;
             }
-            int selection = getPick(input, output, 1, i);
+            int selection = getPick(input, output, 1, i-1);
             if (selection == -1) {
                 return;
             }
