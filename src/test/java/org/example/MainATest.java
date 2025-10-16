@@ -101,4 +101,56 @@ public class MainATest {
         app.borrow(new Scanner(srInput), new PrintWriter(output));
         assert output.toString().contains("15. Stealth by Peter J. Westwick - Available");
     }
+
+    @Test
+    @DisplayName("A-TEST-02 - Initialization and Authentication with Error Handling")
+    void A_TEST_02() {
+        /*
+         * Test: System starts with 20 books and 3 borrower accounts, valid login succeeds and
+         * displays menu options and logouts. Another user enters invalid credentials, rejected with
+         * error message and retry prompt
+         */
+
+        Main app = new Main();
+        // check catalogue has 20 books
+        assert app.getCatalogue().getSize() == 20;
+
+        // check there are 3 users
+        assert app.getUsers().getSize() == 3;
+
+        // valid login
+        String input = "jeff\n6789\n"; // valid credentials for user "jeff"
+        StringReader srInput = new StringReader(input);
+        StringWriter output = new StringWriter();
+        app.login(new Scanner(srInput), new PrintWriter(output));
+        // login check
+        assert app.signedIn();
+        // menu options check
+        app.mainMenu(new Scanner(srInput), new PrintWriter(output));
+        assert output.toString().contains("1. Borrow");
+        assert output.toString().contains("2. Return");
+        assert output.toString().contains("3. Sign-out");
+
+        // logout
+        input = "3\n1\n"; // logout command
+        srInput = new StringReader(input);
+        output = new StringWriter();
+        app.logout(new Scanner(srInput), new PrintWriter(output));
+        // logout check
+        assert !app.signedIn();
+        // logout message check
+        assert output.toString().contains("Signing out jeff");
+
+        // invalid login
+        input = "invalidUser\nwrongPass\n"; // invalid credentials
+        srInput = new StringReader(input);
+        output = new StringWriter();
+        app.login(new Scanner(srInput), new PrintWriter(output));
+        // login check - should not be signed in
+        assert !app.signedIn();
+        // error message check
+        assert output.toString().contains("Username or password incorrect.");
+        // retry prompt check
+        assert output.toString().endsWith("Please enter your username: \n");
+    }
 }
