@@ -208,15 +208,15 @@ public class Main {
                 this.record.add(this.currUser.getUsername() + " borrowed " + borrowedBook.getTitle() + " - due " + date.toString());
                 // update account
                 this.currUser.addBorrowed(borrowedBook);
-                // present info to user
                 // get ack
                 confirmation(input, output, borrowedBook);
-                // return
-                mainMenu(input,output);
-
+                // if book was on hold by this user, remove them from the queue
                 if (!borrowedBook.getAvailability()) {
                     borrowedBook.popFirst();
                 }
+                // let user know they have successfully borrowed the book
+                output.println("Acknowledged received. Returning to main menu.");
+                output.flush();
             } else {
                 // show hold menu
 
