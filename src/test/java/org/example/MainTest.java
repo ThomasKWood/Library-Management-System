@@ -1078,7 +1078,7 @@ public class MainTest {
     }
 
     @Test
-    @DisplayName("Borrow - upon confirmation ack - main menu is presented")
+    @DisplayName("Borrow - upon confirmation ack return to system functionality")
     void RESP_15_test_02() {
         Main app = new Main();
         Users users = app.getUsers();
@@ -1092,7 +1092,7 @@ public class MainTest {
 
         app.borrow(new Scanner(srInput), new PrintWriter(output));
 
-        if (!output.toString().contains("MAIN MENU")) {
+        if (!output.toString().contains("Acknowledged received. Returning to main menu.")) {
             assert false;
         }
     }
