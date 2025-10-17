@@ -9,10 +9,7 @@ public class Users {
         users = new ArrayList<User>();
     }
 
-    public void addUser(User user) {
-        users.add(user);
-    }
-
+    // return the user with the given username, or null if not found
     public User getUser(String usr) {
         for (User user : users) {
             if (user.getUsername().equals(usr)) {
@@ -22,12 +19,18 @@ public class Users {
         return null;
     }
 
+    // return the number of users in the collection
     public int getSize() {
         return users.size();
     }
 
+    // return the list of users
     public ArrayList<User> getUsers() {
         return users;
     }
 
+    // add a new user to the collection
+    public void addUser(User user) {
+        users.add(user);
+    }
 }

@@ -20,7 +20,7 @@ public class MainATest {
         StringWriter output = new StringWriter();
         app.login(new Scanner(srInput), new PrintWriter(output));
         // login check
-        assert app.signedIn();
+        assert app.isSignedIn();
 
         // instead of borrowing "The Great Gatsby", we borrow "Stealth"
         input = "15\n1\n1\n";
@@ -36,7 +36,7 @@ public class MainATest {
         srInput = new StringReader(input);
         app.logout(new Scanner(srInput), new PrintWriter(output));
         // logout check
-        assert !app.signedIn();
+        assert !app.isSignedIn();
 
         // clear
         output = new StringWriter();
@@ -46,7 +46,7 @@ public class MainATest {
         srInput = new StringReader(input);
         app.login(new Scanner(srInput), new PrintWriter(output));
         // login check
-        assert app.signedIn();
+        assert app.isSignedIn();
 
         // list check - should see book is checked out
         input = "15\n"; // User2 login
@@ -62,14 +62,14 @@ public class MainATest {
         srInput = new StringReader(input);
         app.logout(new Scanner(srInput), new PrintWriter(output));
         // logout check
-        assert !app.signedIn();
+        assert !app.isSignedIn();
 
         // User1 logs back in
         input = "thomaswood\n1234\n"; // User1 login
         srInput = new StringReader(input);
         app.login(new Scanner(srInput), new PrintWriter(output));
         // login check
-        assert app.signedIn();
+        assert app.isSignedIn();
 
         // return book
         input = "2\n1\n1\n";
@@ -83,7 +83,7 @@ public class MainATest {
         srInput = new StringReader(input);
         app.logout(new Scanner(srInput), new PrintWriter(output));
         // logout check
-        assert !app.signedIn();
+        assert !app.isSignedIn();
 
         // clear
         output = new StringWriter();
@@ -93,7 +93,7 @@ public class MainATest {
         srInput = new StringReader(input);
         app.login(new Scanner(srInput), new PrintWriter(output));
         // login check
-        assert app.signedIn();
+        assert app.isSignedIn();
 
         // list check - should see book is available
         input = "15\n"; // User2 login
@@ -124,7 +124,7 @@ public class MainATest {
         StringWriter output = new StringWriter();
         app.login(new Scanner(srInput), new PrintWriter(output));
         // login check
-        assert app.signedIn();
+        assert app.isSignedIn();
         // menu options check
         app.mainMenu(new Scanner(srInput), new PrintWriter(output));
         assert output.toString().contains("1. Borrow");
@@ -137,7 +137,7 @@ public class MainATest {
         output = new StringWriter();
         app.logout(new Scanner(srInput), new PrintWriter(output));
         // logout check
-        assert !app.signedIn();
+        assert !app.isSignedIn();
         // logout message check
         assert output.toString().contains("Signing out jeff");
 
@@ -147,7 +147,7 @@ public class MainATest {
         output = new StringWriter();
         app.login(new Scanner(srInput), new PrintWriter(output));
         // login check - should not be signed in
-        assert !app.signedIn();
+        assert !app.isSignedIn();
         // error message check
         assert output.toString().contains("Username or password incorrect.");
         // retry prompt check

@@ -281,7 +281,7 @@ public class MainTest {
         Main app = new Main();
         //app.mainInit();
 
-        if (app.signedIn()) {
+        if (app.isSignedIn()) {
             assert false;
         }
     }
@@ -299,7 +299,7 @@ public class MainTest {
 
         app.login(new Scanner(srInput), new PrintWriter(output));
 
-        if (!app.signedIn()) {
+        if (!app.isSignedIn()) {
             assert false;
         }
     }
@@ -340,7 +340,7 @@ public class MainTest {
         output = new StringWriter();
         app.logout(new Scanner(srInput), new PrintWriter(output));
 
-        if (app.signedIn()) {
+        if (app.isSignedIn()) {
             assert false;
         }
     }
@@ -363,7 +363,7 @@ public class MainTest {
         output = new StringWriter();
         app.logout(new Scanner(srInput), new PrintWriter(output));
 
-        if (!app.signedIn()) {
+        if (!app.isSignedIn()) {
             assert false;
         }
     }
@@ -380,7 +380,7 @@ public class MainTest {
 
         app.logout(new Scanner(srInput), new PrintWriter(output));
 
-        if (app.signedIn()) {
+        if (app.isSignedIn()) {
             assert false;
         }
     }
@@ -426,8 +426,8 @@ public class MainTest {
         Users users = app.getUsers();
 
         // add in user nofitcations
-        users.getUser("thomaswood").addNoti("Stealth");
-        users.getUser("thomaswood").addNoti("Mickey7");
+        users.getUser("thomaswood").addNotification("Stealth");
+        users.getUser("thomaswood").addNotification("Mickey7");
 
         StringWriter output = new StringWriter();
 
@@ -454,7 +454,7 @@ public class MainTest {
         catalogue.getBook("Stealth").setDueDateNow();
 
         // add in user nofitcations
-        users.getUser("thomaswood").addNoti("Stealth");
+        users.getUser("thomaswood").addNotification("Stealth");
 
         StringWriter output = new StringWriter();
 
@@ -474,7 +474,7 @@ public class MainTest {
         Users users = app.getUsers();
 
         // add in user nofitcations
-        users.getUser("thomaswood").addNoti("Mark Carney's Downtown Ottawa Adventure");
+        users.getUser("thomaswood").addNotification("Mark Carney's Downtown Ottawa Adventure");
 
         StringWriter output = new StringWriter();
 
@@ -771,7 +771,7 @@ public class MainTest {
 
         int selected = app.borrowMenu(new Scanner(srInput), new PrintWriter(output), users.getUser("thomaswood"), catalogue);
         output = new StringWriter();
-        app.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected - 1));
+        app.bookDetailsBorrow(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected - 1));
         if (!output.toString().contains("Stealth")) {
             assert false;
         }
@@ -793,7 +793,7 @@ public class MainTest {
         int selected = app.borrowMenu(new Scanner(srInput), new PrintWriter(output), testUser, catalogue);
         srInput = new StringReader(input);
         output = new StringWriter();
-        selected = app.bookDetails(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected - 1));
+        selected = app.bookDetailsBorrow(new Scanner(srInput), new PrintWriter(output), catalogue.getBook(selected - 1));
         assertEquals(1, selected);
     }
 
@@ -808,7 +808,7 @@ public class MainTest {
         // test books:
         app.setUser(testUser);
 
-        assert app.checkAvail(14);
+        assert app.checkAvailable(14);
     }
 
     @Test
@@ -826,7 +826,7 @@ public class MainTest {
 
         app.setUser(testUser);
 
-        assert app.checkAvail(14);
+        assert app.checkAvailable(14);
     }
 
     @Test
@@ -845,7 +845,7 @@ public class MainTest {
 
         app.setUser(testUser);
 
-        assert !app.checkAvail(14);
+        assert !app.checkAvailable(14);
     }
 
     @Test
@@ -863,7 +863,7 @@ public class MainTest {
 
         app.setUser(testUser);
 
-        assert !app.checkAvail(14);
+        assert !app.checkAvailable(14);
     }
 
     @Test
@@ -874,7 +874,7 @@ public class MainTest {
 
         app.setUser(users.getUser("thomaswood"));
 
-        assert app.checkElig();
+        assert app.checkEligible();
     }
 
     @Test
@@ -891,7 +891,7 @@ public class MainTest {
 
         app.setUser(testUsr);
 
-        assert !app.checkElig();
+        assert !app.checkEligible();
     }
 
     @Test
@@ -1210,7 +1210,7 @@ public class MainTest {
 
         app.borrow(new Scanner(srInput), new PrintWriter(output));
 
-        if (!catalogue.getBook("Stealth").firstQueue().getUsername().equals("thomaswood")) {
+        if (!catalogue.getBook("Stealth").getFirst().getUsername().equals("thomaswood")) {
             assert false;
         }
     }

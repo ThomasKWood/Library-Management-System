@@ -7,9 +7,13 @@ import java.util.Scanner;
 
 public class Main {
 
+    // currently signed-in user (null when no one is signed in)
     private User currUser;
+    // the library catalogue
     private final Catalogue library;
+    // registered users
     private final Users users;
+    // simple log of borrow/return actions
     private final ArrayList<String> record;
 
     public static void main(String[] args) {
@@ -19,9 +23,10 @@ public class Main {
         Main app = new Main();
         //app.mainInit();
 
+        // prompt for login before entering main loop
         app.login(input, output);
 
-        while (app.signedIn()) {
+        while (app.isSignedIn()) {
             int selection = app.mainMenu(input, output);
 
             switch (selection) {
@@ -47,107 +52,38 @@ public class Main {
         record = new ArrayList<>();
     }
 
-    public void login(Scanner input, PrintWriter output) {
-        //
-        if (this.currUser == null) {
-            output.println("Please enter your username: ");
-            output.flush();
-            String usr;
-            if (input.hasNextLine()) {
-                usr = input.nextLine();
-            } else {
-                return;
-            }
-            output.println("Please enter your password: ");
-            output.flush();
-            String pass;
-            if (input.hasNextLine()) {
-                pass = input.nextLine();
-            } else {
-                return;
-            }
-
-            if (usr == null || pass == null || usr.isEmpty() || pass.isEmpty()) {
-                output.println("Username or password cannot be blank.");
-                output.flush();
-                login(input, output);
-            }
-            // good thing this isn't algorithms where time complexity matters
-            for (User user : this.users.getUsers()) {
-                if (user.getUsername().equals(usr)) {
-                    if (user.passwordCorrect(pass)) {
-                        setUser(user);
-                        output.println("Welcome " + this.currUser.getUsername());
-                        output.flush();
-                        prompt(output);
-                        break;
-                    }
-                }
-            }
-            // this will also print if the username doesn't exist. technically this is more secure
-            if (this.currUser == null) {
-                output.println("Username or password incorrect.");
-                output.flush();
-                login(input, output);
-            }
-        } else {
-            output.println("You are already logged in as: " + this.currUser.getUsername());
-            output.flush();
-        }
-    }
-
-    public void prompt(PrintWriter output) {
-        if (!signedIn()) {
-            output.println("Not logged in!");
-            output.flush();
-        } else {
-            int sent = 0;
-
-            while (this.currUser.hasNoti()) {
-                String thisTitle = this.currUser.popNoti();
-                Book thisBook = this.library.getBook(thisTitle);
-
-                // check valid & available
-                if (thisBook != null && checkAvail(thisBook)) {
-                    output.println(thisTitle + " is available!");
-                    output.flush();
-                    sent++;
-                }
-            }
-
-            if (sent == 0) {
-                output.println("No notifications!");
-                output.flush();
-            }
-        }
-    }
-
-    public boolean signedIn() {
-        return this.currUser != null;
-    }
-
-    public void logout(Scanner input, PrintWriter output) {
-        output.println("Are you sure you want to sign out? \n1. Yes\n2. No");
-        output.flush();
-        int selection = getPick(input, output, 1,2);
-        if (selection == -1 || selection == 2) {
-            return;
-        }
-        output.println("Signing out " + this.currUser.getUsername());
-        output.flush();
-        this.currUser = null;
-        login(input, output);
-    }
-
+    // get currently signed-in user
     public User getUser() {
         return this.currUser;
     }
 
-    public void setUser(User usr){
+    // set currently signed-in user - for testing
+    protected void setUser(User usr){
         this.currUser = usr;
     }
 
-    public boolean checkAvail(int bookIndex) {
+    // get the borrow/return record log
+    public ArrayList<String> getRecord() {
+        return this.record;
+    }
+
+    // get the registered users
+    public Users getUsers() {
+        return this.users;
+    }
+
+    // get the library catalogue
+    public Catalogue getCatalogue() {
+        return this.library;
+    }
+
+    // returns true when a user is signed in
+    public boolean isSignedIn() {
+        return this.currUser != null;
+    }
+
+    // check availability by index (considers holds and current user position)
+    public boolean checkAvailable(int bookIndex) {
         Book thisBook = this.library.getBook(bookIndex);
 
         if (thisBook.getAvailability()) {
@@ -155,131 +91,99 @@ public class Main {
         } else {
             if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) {
                 return false; // book is checked out
-            } else if (thisBook.firstQueue() != null) {
-                // check hold queue to see if current signed in is in front
-                return thisBook.firstQueue().getUsername().equals(this.currUser.getUsername()); // currUser is first in hold queue
+            } else if (thisBook.getFirst() != null) {
+                // if current user is first in hold queue they can borrow
+                return thisBook.getFirst().getUsername().equals(this.currUser.getUsername()); // currUser is first in hold queue
 
             }
             return false;
         }
     }
 
-    public boolean checkAvail(Book thisBook) {
-
-        if (thisBook.getAvailability()) {
-            return true;
-        } else {
-            if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) {
-                return false; // book is checked out
-            } else if (thisBook.firstQueue() != null) {
-                // check hold queue to see if current signed in is in front
-                return thisBook.firstQueue().getUsername().equals(this.currUser.getUsername()); // currUser is first in hold queue
-
-            }
-            return false;
-        }
-    }
-
-    public void borrow(Scanner input, PrintWriter output) {
-        int selection;
-
-        selection = borrowMenu(input, output, this.currUser, this.library);
-
-        int bookIndex = selection-1;
-        Book borrowedBook = this.library.getBook(bookIndex);
-        selection = bookDetails(input, output, borrowedBook);
-
-        if (selection == -1) {
-            return;
-        }
-
-        if (selection == 1) {
-            boolean bAvailable = checkAvail(bookIndex);
-            boolean uEligible = checkElig();
-
-            // first check if user already has this book checked
-            // RESP 17
-
-
-            if (bAvailable && uEligible) {
-                // update book
-                LocalDateTime date = borrowedBook.setDueDateNow();
-                // update record
-                this.record.add(this.currUser.getUsername() + " borrowed " + borrowedBook.getTitle() + " - due " + date.toString());
-                // update account
-                this.currUser.addBorrowed(borrowedBook);
-                // get ack
-                confirmation(input, output, borrowedBook);
-                // if book was on hold by this user, remove them from the queue
-                if (!borrowedBook.getAvailability()) {
-                    borrowedBook.popFirst();
-                }
-                // let user know they have successfully borrowed the book
-                output.println("Acknowledged received. Returning to main menu.");
-                output.flush();
-            } else {
-                // show hold menu
-
-                // book is already on hold by user
-                if (borrowedBook.checkQueue(this.currUser)) {
-                    output.println("You already have a hold on this book.");
-                    output.flush();
-
-                }
-                // book is already checked out by user
-                else if (this.currUser.getBorrowed().contains(borrowedBook)) {
-                    output.println("You already have this booked checked out.");
-                    output.flush();
-                }
-
-                // book is checked out by someone else
-                else if (uEligible) {
-                    output.println("The book you selected is checked out by someone else. Would you like to place a hold? ");
-                    output.println("1: Yes\n2. No");
-                    output.flush();
-                    selection = getPick(input, output, 1,2);
-                    if (selection == -1) {
-                        return;
-                    }
-                    if (selection == 1) {
-                        borrowedBook.placeHold(this.currUser);
-                        output.println("You have been added to the hold queue.");
-                        output.flush();
-                    } else {
-                        borrow(input,output);
-                    }
-                } else if (bAvailable) {
-                    output.println("You are currently at your borrow limit. You cannot borrow any more books at this time. Would you like to place a hold instead?");
-                    output.println("1: Yes\n2. No");
-                    output.flush();
-                    selection = getPick(input, output, 1,2);
-                    if (selection == -1) {
-                        return;
-                    }
-                    if (selection == 1) {
-                        borrowedBook.placeHold(this.currUser);
-                        output.println("You have been added to the hold queue.");
-                        output.flush();
-                    } else {
-                        borrow(input,output);
-                    }
-                } else {
-                    output.println("Something went wrong. Returning to main menu");
-                    output.flush();
-                }
-            }
-        }
-    }
-
-    public boolean checkElig() {
+    // policy: user can borrow up to 3 books
+    public boolean checkEligible() {
         return this.currUser.getBorrowed().size() < 3;
     }
 
-    public ArrayList<String> getRecord() {
-        return this.record;
+    // final confirmation prompt after successful checkout
+    public void confirmation(Scanner input, PrintWriter output, Book book) {
+        // final acknowledgement shown to user after checkout
+        output.println("You have successfully checked out " + book.getTitle() + " by " + book.getAuthor() + ". It is due on the " + book.setDueDateNow());
+        output.println("Please acknowledge this confirmation by entering 1: ");
+        output.flush();
+        getPick(input, output, 1,1);
     }
 
+    // get and validate user menu pick within a given range
+    protected int getPick(Scanner input, PrintWriter output, int rangeMin, int rangeMax) {
+        int selection;
+        if (!input.hasNextLine()) {
+            return -1;
+        }
+        // read string and parse to integer with retry on invalid input
+        try {
+            selection = Integer.parseInt(input.nextLine());
+        } catch (NumberFormatException e) {
+            output.println("Invalid Input - Input was not recognized. Please try again: ");
+            output.flush();
+            selection = getPick(input, output, rangeMin, rangeMax);
+        }
+
+        // ensure selection is within allowed range
+        if (selection < rangeMin || selection > rangeMax) {
+            output.println("Invalid Option - Please enter a number that is from " + rangeMin + " to " + rangeMax + ".");
+            output.flush();
+            selection = getPick(input, output, rangeMin, rangeMax);
+        }
+
+        return selection;
+    }
+
+    // show book details and confirm return
+    public int bookDetailsReturn(Scanner input, PrintWriter output, Book book) {
+        output.println("\nYou have selected:");
+        output.println(book.getTitle());
+        output.println(book.getAuthor());
+        output.println("\n Are you sure you would like to proceed with returning this book?");
+        output.println("1. Yes\n2. No");
+        output.flush();
+        int selected = getPick(input, output, 1, 2);
+
+        if (selected == 1) {
+            output.println("You have selected Yes. Processing return...");
+            output.flush();
+        } else if (selected == 0) {
+            output.println("You have selected No. Bringing you back to main menu.");
+            output.flush();
+        }
+        return selected;
+    }
+
+    // show book details and confirm borrow
+    public int bookDetailsBorrow(Scanner input, PrintWriter output, Book book) {
+        output.println("\nYou have selected:");
+        output.println(book.getTitle());
+        output.println(book.getAuthor());
+        output.println(book.getStatusCode().getLabel());
+        output.println("\n Are you sure you would like to proceed with borrowing this book?");
+        output.println("1. Yes\n2. No");
+        output.flush();
+        int selected = getPick(input, output, 1, 2);
+
+        if (selected == 1) {
+            output.println("You have selected Yes. Proceeding to booking...");
+            output.flush();
+        } else if (selected == 0) {
+            output.println("You have selected No. Bringing you back to main menu.");
+            output.flush();
+
+        }
+        return selected;
+    }
+
+    // process book return
     public void returnBook(Scanner input, PrintWriter output) {
+        // if user has no books, bail out
         if (this.currUser.getBorrowed().isEmpty()) {
             output.println("You have no books currently checked out. Returning to main menu.");
             output.flush();
@@ -287,6 +191,7 @@ public class Main {
             output.println("Here are the books you have checked out. Pick one you would like to return:");
             output.flush();
             int i = 1;
+            // list borrowed books; show current due by setting/refreshing due date (odd code in original)
             for (Book book : this.currUser.getBorrowed()) {
                 output.println(i + ". " + book.getTitle() + " by " + book.getAuthor() + " due on " + book.setDueDateNow().toString());
                 output.flush();
@@ -301,23 +206,25 @@ public class Main {
             if (selection == -1 || selection == 2) {
                 return;
             }
-            // do return process
+            // perform return: remove from user's list and update book status
             this.currUser.getBorrowed().remove(returnBook);
             returnBook.returnBook();
             this.record.add(returnBook.getTitle()+" returned on " + LocalDateTime.now());
-            // notify
-            if (returnBook.firstQueue() != null) {
-                returnBook.firstQueue().addNoti(returnBook.getTitle());
+            // notify first user in hold queue if present
+            if (returnBook.getFirst() != null) {
+                returnBook.getFirst().addNotification(returnBook.getTitle());
             }
         }
     }
 
+    // show main menu and get user selection
     public int mainMenu(Scanner input, PrintWriter output) {
         output.println("\n---------------- MAIN MENU ----------------\n1. Borrow\n2. Return\n3. Sign-out");
         output.flush();
         return getPick(input, output, 1,3);
     }
 
+    // show borrow menu and get user selection
     public int borrowMenu(Scanner input, PrintWriter output, User user, Catalogue catalogue) {
         output.println("\n---------------- BORROW ----------------");
         output.println("\nYou have " + user.getBorrowed().size() + " books borrowed.");
@@ -344,7 +251,7 @@ public class Main {
                 output.flush();
             }
         }
-        // get pick
+        // get pick from user if catalogue not empty
         int selection = 0;
         if (catalogue.getSize() > 0) {
             selection = getPick(input, output, 1, catalogue.getSize());
@@ -354,82 +261,209 @@ public class Main {
         return selection;
     }
 
-    public int bookDetails(Scanner input, PrintWriter output, Book book) {
-        output.println("\nYou have selected:");
-        output.println(book.getTitle());
-        output.println(book.getAuthor());
-        output.println(book.getStatusCode().getLabel());
-        output.println("\n Are you sure you would like to proceed with borrowing this book?");
-        output.println("1. Yes\n2. No");
-        output.flush();
-        int selected = getPick(input, output, 1, 2);
+    // check availability by Book instance (same logic as index version)
+    public boolean checkAvailable(Book thisBook) {
 
-        if (selected == 1) {
-            output.println("You have selected Yes. Proceeding to booking...");
-            output.flush();
-        } else if (selected == 0) {
-            output.println("You have selected No. Bringing you back to main menu.");
-            output.flush();
+        if (thisBook.getAvailability()) {
+            return true;
+        } else {
+            if (thisBook.getStatusCode().equals(Book.StatusCode.CHECKED)) {
+                return false; // book is checked out
+            } else if (thisBook.getFirst() != null) {
+                // if current user is first in hold queue they can borrow
+                return thisBook.getFirst().getUsername().equals(this.currUser.getUsername()); // currUser is first in hold queue
 
+            }
+            return false;
         }
-        return selected;
     }
 
-    public int bookDetailsReturn(Scanner input, PrintWriter output, Book book) {
-        output.println("\nYou have selected:");
-        output.println(book.getTitle());
-        output.println(book.getAuthor());
-        output.println("\n Are you sure you would like to proceed with returning this book?");
-        output.println("1. Yes\n2. No");
-        output.flush();
-        int selected = getPick(input, output, 1, 2);
-
-        if (selected == 1) {
-            output.println("You have selected Yes. Processing return...");
-            output.flush();
-        } else if (selected == 0) {
-            output.println("You have selected No. Bringing you back to main menu.");
-            output.flush();
-        }
-        return selected;
-    }
-
-    protected int getPick(Scanner input, PrintWriter output, int rangeMin, int rangeMax) {
+    // process book borrowing
+    public void borrow(Scanner input, PrintWriter output) {
         int selection;
-        if (!input.hasNextLine()) {
-            return -1;
-        }
-        // get number
-        try {
-            selection = Integer.parseInt(input.nextLine());
-        } catch (NumberFormatException e) {
-            output.println("Invalid Input - Input was not recognized. Please try again: ");
-            output.flush();
-            selection = getPick(input, output, rangeMin, rangeMax);
+
+        selection = borrowMenu(input, output, this.currUser, this.library);
+
+        int bookIndex = selection-1;
+        Book borrowedBook = this.library.getBook(bookIndex);
+        selection = bookDetailsBorrow(input, output, borrowedBook);
+
+        if (selection == -1) {
+            return;
         }
 
-        if (selection < rangeMin || selection > rangeMax) {
-            output.println("Invalid Option - Please enter a number that is from " + rangeMin + " to " + rangeMax + ".");
-            output.flush();
-            selection = getPick(input, output, rangeMin, rangeMax);
-        }
+        if (selection == 1) {
+            boolean bAvailable = checkAvailable(bookIndex);
+            boolean uEligible = checkEligible();
 
-        return selection;
+            // first check if user already has this book checked
+            // RESP 17
+
+
+            if (bAvailable && uEligible) {
+                // update book: set due date and mark checked out
+                LocalDateTime date = borrowedBook.setDueDateNow();
+                // append to local record log
+                this.record.add(this.currUser.getUsername() + " borrowed " + borrowedBook.getTitle() + " - due " + date.toString());
+                // add to user's borrowed list
+                this.currUser.addBorrowed(borrowedBook);
+                // ask user to acknowledge
+                confirmation(input, output, borrowedBook);
+                // if book was on hold by this user, remove them from the queue
+                if (!borrowedBook.getAvailability()) {
+                    borrowedBook.popFirst();
+                }
+                // success message
+                output.println("Acknowledged received. Returning to main menu.");
+                output.flush();
+            } else {
+                // show hold menu or error messages
+
+                // user already has a hold on this book
+                if (borrowedBook.checkQueue(this.currUser)) {
+                    output.println("You already have a hold on this book.");
+                    output.flush();
+
+                }
+                // user already has this book checked out
+                else if (this.currUser.getBorrowed().contains(borrowedBook)) {
+                    output.println("You already have this booked checked out.");
+                    output.flush();
+                }
+
+                // book is checked out by someone else - offer to place a hold
+                else if (uEligible) {
+                    output.println("The book you selected is checked out by someone else. Would you like to place a hold? ");
+                    output.println("1: Yes\n2. No");
+                    output.flush();
+                    selection = getPick(input, output, 1,2);
+                    if (selection == -1) {
+                        return;
+                    }
+                    if (selection == 1) {
+                        borrowedBook.placeHold(this.currUser);
+                        output.println("You have been added to the hold queue.");
+                        output.flush();
+                    } else {
+                        borrow(input,output);
+                    }
+                } else if (bAvailable) {
+                    // user has reached borrow limit but book is available -> offer hold
+                    output.println("You are currently at your borrow limit. You cannot borrow any more books at this time. Would you like to place a hold instead?");
+                    output.println("1: Yes\n2. No");
+                    output.flush();
+                    selection = getPick(input, output, 1,2);
+                    if (selection == -1) {
+                        return;
+                    }
+                    if (selection == 1) {
+                        borrowedBook.placeHold(this.currUser);
+                        output.println("You have been added to the hold queue.");
+                        output.flush();
+                    } else {
+                        borrow(input,output);
+                    }
+                } else {
+                    output.println("Something went wrong. Returning to main menu");
+                    output.flush();
+                }
+            }
+        }
     }
 
-    public void confirmation(Scanner input, PrintWriter output, Book book) {
-        output.println("You have successfully checked out " + book.getTitle() + " by " + book.getAuthor() + ". It is due on the " + book.setDueDateNow());
-        output.println("Please acknowledge this confirmation by entering 1: ");
+    // process user logout
+    public void logout(Scanner input, PrintWriter output) {
+        output.println("Are you sure you want to sign out? \n1. Yes\n2. No");
         output.flush();
-        getPick(input, output, 1,1);
+        int selection = getPick(input, output, 1,2);
+        if (selection == -1 || selection == 2) {
+            return;
+        }
+        output.println("Signing out " + this.currUser.getUsername());
+        output.flush();
+        this.currUser = null;
+        // after logout immediately prompt for login again
+        login(input, output);
     }
 
-    public Users getUsers() {
-        return this.users;
+    // process user login
+    public void login(Scanner input, PrintWriter output) {
+        // Only perform login if no user is currently signed in
+        if (this.currUser == null) {
+            output.println("Please enter your username: ");
+            output.flush();
+            String usr;
+            if (input.hasNextLine()) {
+                usr = input.nextLine();
+            } else {
+                return;
+            }
+            output.println("Please enter your password: ");
+            output.flush();
+            String pass;
+            if (input.hasNextLine()) {
+                pass = input.nextLine();
+            } else {
+                return;
+            }
+
+            // basic blank input validation
+            if (usr == null || pass == null || usr.isEmpty() || pass.isEmpty()) {
+                output.println("Username or password cannot be blank.");
+                output.flush();
+                login(input, output);
+            }
+            // good thing this isn't algorithms where time complexity matters
+            for (User user : this.users.getUsers()) {
+                if (user.getUsername().equals(usr)) {
+                    if (user.passwordCorrect(pass)) {
+                        setUser(user);
+                        output.println("Welcome " + this.currUser.getUsername());
+                        output.flush();
+                        // after successful login, show notifications
+                        prompt(output);
+                        break;
+                    }
+                }
+            }
+            // this will also print if the username doesn't exist. technically this is more secure
+            if (this.currUser == null) {
+                output.println("Username or password incorrect.");
+                output.flush();
+                login(input, output);
+            }
+        } else {
+            output.println("You are already logged in as: " + this.currUser.getUsername());
+            output.flush();
+        }
     }
 
-    public Catalogue getCatalogue() {
-        return this.library;
+    // show notifications for signed-in user
+    public void prompt(PrintWriter output) {
+        // show notifications for the signed-in user
+        if (!isSignedIn()) {
+            output.println("Not logged in!");
+            output.flush();
+        } else {
+            int sent = 0;
+
+            // process all queued notifications for the user
+            while (this.currUser.hasNotification()) {
+                String thisTitle = this.currUser.popNotification();
+                Book thisBook = this.library.getBook(thisTitle);
+
+                // ensure the book is valid and currently available
+                if (thisBook != null && checkAvailable(thisBook)) {
+                    output.println(thisTitle + " is available!");
+                    output.flush();
+                    sent++;
+                }
+            }
+
+            if (sent == 0) {
+                output.println("No notifications!");
+                output.flush();
+            }
+        }
     }
 }
-
