@@ -5,9 +5,9 @@ public class InitializeUsers {
     protected Users users = new Users();
 
     public Users initUsers(){
-        users.addUser(new User("thomaswood", "1234"));
-        users.addUser(new User("johndoe", "4321"));
-        users.addUser(new User("jeff", "6789"));
+        users.addUser(new User("alice", "pass123"));
+        users.addUser(new User("bob", "pass456"));
+        users.addUser(new User("charlie", "pass789"));
         return users;
     }
 }
