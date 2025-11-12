@@ -194,6 +194,18 @@ public class LibrarySteps {
         assertEquals(Book.StatusCode.HOLD, book.getStatusCode(), bookTitle + " should be on hold");
     }
 
+    @Then("{string} should have no notifications for {string}")
+    public void should_have_no_notifications_for(String username, String bookTitle) {
+        assertFalse(savedNotifications.contains(username+bookTitle), username + " should have no notifications for " + bookTitle);
+    }
+
+    @And("{string} should have {int} books borrowed")
+    public void should_have_books_borrowed(String username, int count) {
+        User user = library.getUsers().getUser(username);
+        assertNotNull(user, "User should not be null: " + username);
+        assertEquals(count, user.getBorrowed().size(), username + " should have " + count + " books borrowed");
+    }
+
     // HELPERS
     private User userSessionMatches(String username) {
         User currentUser = library.getUser();

@@ -86,15 +86,78 @@ Feature: Library Operations
     # Assert: Users can't exceed 3 books, can place holds at the limit, gain borrowing capacity after
     # returns, and receive notifications when their held books are returned by others (regardless of
     # their current borrowing capacity).
-#    Scenario: Borrowing limit and hold interactions
-#      Given the library is initialized
-#      And our testing variables have been cleared
-#      When "alice" logs in
-#      Then the current session should be for "alice"
-#      When "alice" attempts to borrow "The Great Gatsby"
-#      Then "The Great Gatsby" should be marked as checked out
-#      When "alice" attempts to borrow "1984"
-#      Then "1984" should be marked as checked out
-#      When "alice" attempts to borrow "placeholder"
-#      Then "placeholder" should be marked as checked out
-
+    Scenario: Borrowing limit and hold interactions
+      Given the library is initialized
+      And our testing variables have been cleared
+      # alice borrows 3 books
+      When "alice" logs in
+      Then the current session should be for "alice"
+      When "alice" attempts to borrow "The Great Gatsby"
+      Then "The Great Gatsby" should be marked as checked out
+      When "alice" attempts to borrow "1984"
+      Then "1984" should be marked as checked out
+      When "alice" attempts to borrow "Pride and Prejudice"
+      Then "Pride and Prejudice" should be marked as checked out
+      And "alice" should have 3 books borrowed
+      # alice attempts to borrow a 4th but is offered to place hold instead
+      When "alice" attempts to borrow "The Hobbit"
+      Then "The Hobbit" should be marked as on hold
+      And "alice" should be in the hold queue for "The Hobbit"
+      And "alice" should have 3 books borrowed
+      # alice returns one book to drop below limit
+      When "alice" returns "1984"
+      Then "1984" should be marked as available
+      # alice is now able to The Hobbit
+      When "alice" attempts to borrow "The Hobbit"
+      Then "The Hobbit" should be marked as checked out
+      When "alice" logs out
+      # bob and charlie place holds on Harry Potter
+      And "bob" logs in
+      Then the current session should be for "bob"
+      When "bob" attempts to borrow "Harry Potter"
+      Then "Harry Potter" should be marked as checked out
+      When "bob" logs out
+      And "charlie" logs in
+      Then the current session should be for "charlie"
+      When "charlie" attempts to borrow "Harry Potter"
+      Then "Harry Potter" should be marked as checked out
+      And "charlie" should be in the hold queue for "Harry Potter"
+      When "charlie" logs out
+      # now alice places a hold on Harry Potter
+      And "alice" logs back in
+      Then the current session should be for "alice"
+      When "alice" attempts to borrow "Harry Potter"
+      Then "Harry Potter" should be marked as checked out
+      And "alice" should be in the hold queue for "Harry Potter"
+      When "alice" logs out
+      # bob returns Harry Potter, charlie should be notified
+      And "bob" logs back in
+      Then the current session should be for "bob"
+      When "bob" returns "Harry Potter"
+      Then "Harry Potter" should be marked as on hold
+      When "bob" logs out
+      Then the current session should be for "nobody"
+      # charlie borrows Harry Potter, alice should be next in queue but not notified yet
+      When "charlie" logs in
+      Then "charlie" should have a notification for "Harry Potter"
+      When "charlie" attempts to borrow "Harry Potter"
+      Then "Harry Potter" should be marked as checked out
+      When "charlie" logs out
+      And "alice" logs back in
+      Then "alice" should have no notifications for "Harry Potter"
+      And "alice" should be next in the hold queue for "Harry Potter"
+      # charlie returns Harry Potter, alice should be notified
+      When "alice" logs out
+      And "charlie" logs back in
+      Then the current session should be for "charlie"
+      When "charlie" returns "Harry Potter"
+      Then "Harry Potter" should be marked as on hold
+      When "charlie" logs out
+      Then the current session should be for "nobody"
+      # alice returns to go back under limit and borrow Harry Potter
+      When "alice" logs in
+      Then the current session should be for "alice"
+      When "alice" returns "The Great Gatsby"
+      Then "The Great Gatsby" should be marked as available
+      When "alice" attempts to borrow "Harry Potter"
+      Then "Harry Potter" should be marked as checked out

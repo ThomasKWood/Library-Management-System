@@ -348,7 +348,7 @@ public class Main {
                     } else {
                         borrow(input,output);
                     }
-                } else if (bAvailable) {
+                } else if (this.currUser.getBorrowed().size()>=3) {
                     // user has reached borrow limit but book is available -> offer hold
                     output.println("You are currently at your borrow limit. You cannot borrow any more books at this time. Would you like to place a hold instead?");
                     output.println("1: Yes\n2. No");
