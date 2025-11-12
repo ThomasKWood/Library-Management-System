@@ -3,13 +3,13 @@ import java.util.ArrayList;
 
 public class User {
     // user's login name
-    private String username;
+    private final String username;
     private volatile String password;
 
     // list of books the user currently has borrowed
-    private ArrayList<Book> borrowed;
+    private final ArrayList<Book> borrowed;
     // list of notification messages (titles) for the user
-    private ArrayList<String> notifications;
+    private final ArrayList<String> notifications;
 
     // construct a new user with username and password, initialize lists
     public User(String usr, String pass) {
@@ -43,6 +43,11 @@ public class User {
     // remove and return the first notification (assumes first element represents oldest)
     public String popNotification() {
         return this.notifications.removeFirst();
+    }
+
+    // get notification array
+    public ArrayList<String> getNotifications() {
+        return notifications;
     }
 
     // attempt to add a borrowed book to the user's list with basic guards

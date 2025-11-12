@@ -3,6 +3,7 @@ package org.example;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
@@ -108,7 +109,7 @@ public class Main {
     // final confirmation prompt after successful checkout
     public void confirmation(Scanner input, PrintWriter output, Book book) {
         // final acknowledgement shown to user after checkout
-        output.println("You have successfully checked out " + book.getTitle() + " by " + book.getAuthor() + ". It is due on the " + book.setDueDateNow());
+        output.println("You have successfully checked out " + book.getTitle() + " by " + book.getAuthor() + ". It is due on the " + book.getDue());
         output.println("Please acknowledge this confirmation by entering 1: ");
         output.flush();
         getPick(input, output, 1,1);
@@ -193,7 +194,7 @@ public class Main {
             int i = 1;
             // list borrowed books; show current due by setting/refreshing due date (odd code in original)
             for (Book book : this.currUser.getBorrowed()) {
-                output.println(i + ". " + book.getTitle() + " by " + book.getAuthor() + " due on " + book.setDueDateNow().toString());
+                output.println(i + ". " + book.getTitle() + " by " + book.getAuthor() + " due on " + book.getDue().toString());
                 output.flush();
                 i++;
             }

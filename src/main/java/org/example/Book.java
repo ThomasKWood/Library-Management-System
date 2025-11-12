@@ -96,11 +96,8 @@ public class Book {
      * Returns the newly set due date, or the current due date if not available.
      */
     public LocalDateTime setDueDateNow() {
-        // If the book is available, assign a due date 14 days from now and mark as checked out.
-        if (getAvailability()) {
-            this.due = LocalDateTime.now().plusDays(14);
-            setStatus(StatusCode.CHECKED);
-        }
+        this.due = LocalDateTime.now().plusDays(14);
+        setStatus(StatusCode.CHECKED);
 
         // Return current due date (either newly set or existing)
         return this.due;
