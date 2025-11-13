@@ -17,7 +17,6 @@ public class LibrarySteps {
     private Main library;
     private ArrayList<String> savedNotifications;
 
-
     @Given("the library is initialized")
     public void the_library_is_initialized() {
         library = new Main();
