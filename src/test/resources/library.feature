@@ -161,3 +161,35 @@ Feature: Library Operations
       Then "The Great Gatsby" should be marked as available
       When "alice" attempts to borrow "Harry Potter"
       Then "Harry Potter" should be marked as checked out
+
+  # no_books_borrowed_scenario
+  # When no books are borrowed, the system should display an informative message consistent
+  # with UC-03 Extension 1a (“no books currently borrowed”).
+  # Test system behaviour when users have no borrowed books, demonstrating that:
+  #   ● System correctly handles return operations with an empty borrowed list
+  #   ● All books show as available when none are borrowed
+  #   ● Multiple users with no books borrowed are handled correctly
+  # Assert: System correctly reports when users have no borrowed books
+  Scenario: No books borrowed
+    Given the library is initialized
+    And our testing variables have been cleared
+    When "alice" logs in
+    Then the current session should be for "alice"
+    And "alice" should have 0 books borrowed
+    And all books are marked as available
+    When "alice" returns "The Great Gatsby"
+    Then the system should have a record stating "alice attempted return with no books checked out"
+    When "alice" logs out
+    And "bob" logs in
+    Then the current session should be for "bob"
+    And "bob" should have 0 books borrowed
+    And all books are marked as available
+    When "bob" returns "1984"
+    Then the system should have a record stating "bob attempted return with no books checked out"
+    When "bob" logs out
+    And "charlie" logs in
+    Then the current session should be for "charlie"
+    And "charlie" should have 0 books borrowed
+    And all books are marked as available
+    When "charlie" returns "Pride and Prejudice"
+    Then the system should have a record stating "charlie attempted return with no books checked out"

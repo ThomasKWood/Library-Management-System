@@ -188,6 +188,8 @@ public class Main {
         if (this.currUser.getBorrowed().isEmpty()) {
             output.println("You have no books currently checked out. Returning to main menu.");
             output.flush();
+            // this is specifically for scenario 4. without this the scenario can not be tested properly given assignment constraints
+            record.add(this.currUser.getUsername() + " attempted return with no books checked out");
         } else {
             output.println("Here are the books you have checked out. Pick one you would like to return:");
             output.flush();

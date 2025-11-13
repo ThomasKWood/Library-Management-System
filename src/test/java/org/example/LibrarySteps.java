@@ -142,15 +142,36 @@ public class LibrarySteps {
         // check user session matches username
         User currentUser = userSessionMatches(username);
 
-        int bookIndex = getBorrowedIndex(currentUser, bookTitle);
-        String input = bookIndex + "\n1\n"; // return book
-        StringReader srInput = new StringReader(input);
-        StringWriter output = new StringWriter();
-        library.returnBook(new Scanner(srInput), new PrintWriter(output));
-        // return check
-        if(currentUser.getBorrowed().contains(getBookByTitle(bookTitle))) {
-            fail(username + " should have returned " + bookTitle);
+        int bookIndex = 0;
+        if (!currentUser.getBorrowed().isEmpty()) {
+            bookIndex = getBorrowedIndex(currentUser, bookTitle);
         }
+
+        // handle normal return
+        if (bookIndex != 0) {
+            String input = bookIndex + "\n1\n"; // return book
+            StringReader srInput = new StringReader(input);
+            StringWriter output = new StringWriter();
+            library.returnBook(new Scanner(srInput), new PrintWriter(output));
+            // return check
+            if(currentUser.getBorrowed().contains(getBookByTitle(bookTitle))) {
+                fail(username + " should have returned " + bookTitle);
+            }
+        // no book to return handle
+        } else {
+            // capture borrowed count before
+            int borrowedCountBefore = currentUser.getBorrowed().size();
+
+            String input = "21\n1\n"; // return non existing book
+            StringReader srInput = new StringReader(input);
+            StringWriter output = new StringWriter();
+            library.returnBook(new Scanner(srInput), new PrintWriter(output));
+
+            if (currentUser.getBorrowed().size() != borrowedCountBefore) {
+                fail(username + " should not have been able to return " + bookTitle);
+            }
+        }
+
     }
 
     @Then("{string} should be marked as available")
@@ -204,6 +225,28 @@ public class LibrarySteps {
         User user = library.getUsers().getUser(username);
         assertNotNull(user, "User should not be null: " + username);
         assertEquals(count, user.getBorrowed().size(), username + " should have " + count + " books borrowed");
+    }
+
+    @And("all books are marked as available")
+    public void all_books_are_marked_as_available() {
+        Catalogue catalogue = library.getCatalogue();
+        for (int i = 0; i < catalogue.getSize(); i++) {
+            Book book = catalogue.getBook(i);
+            assertTrue(book.getAvailability(), book.getTitle() + " should be available");
+        }
+    }
+
+    @Then("the system should have a record stating {string}")
+    public void the_system_should_have_a_record_stating(String record) {
+        ArrayList<String> records = library.getRecord();
+        boolean found = false;
+        for (String rec : records) {
+            if (rec.contains(record)) {
+                found = true;
+                break;
+            }
+        }
+        assertTrue(found, "System should have a record stating: " + record);
     }
 
     // HELPERS
