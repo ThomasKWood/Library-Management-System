@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LibrarySteps {
     private Main library;
     private ArrayList<String> savedNotifications;
+    private ArrayList<String> bookAvailability;
 
     @Given("the library is initialized")
     public void the_library_is_initialized() {
@@ -26,6 +27,7 @@ public class LibrarySteps {
     @And("our testing variables have been cleared")
     public void our_testing_variables_have_been_cleared() {
         savedNotifications = new ArrayList<>();
+        bookAvailability = new ArrayList<>();
     }
 
     @And("{string} is available in the library")
@@ -105,7 +107,7 @@ public class LibrarySteps {
     @When ("{string} logs out")
     public void logs_out(String username) {
         // check user session matches username
-        User currentUser = userSessionMatches(username);
+        userSessionMatches(username);
 
         // simulate logout with PrintWriter and Scanner
         String input = "1\n"; // logout
@@ -124,16 +126,25 @@ public class LibrarySteps {
     @When("{string} checks availability of {string}")
     public void checks_availability_of(String username, String bookTitle) {
         // check user session matches username
-        User currentUser = userSessionMatches(username);
+        userSessionMatches(username);
+        Book book = getBookByTitle(bookTitle);
+        assertNotNull(book, "Book should not be null: " + bookTitle);
 
-        int bookIndex = getBookIndex(bookTitle);
-        String input = bookIndex + "\n"; // check availability
-        StringReader srInput = new StringReader(input);
-        StringWriter output = new StringWriter();
+        bookAvailability.add(book.getTitle() + library.checkAvailable(book) + username);
+    }
 
-        library.borrowMenu(new Scanner(srInput), new PrintWriter(output), currentUser, library.getCatalogue());
-        // book should be in output but we dont care about its state here we just wanna make sure its there
-        assertTrue(output.toString().contains(bookTitle), "Output should contain book title: " + bookTitle);
+    @Then("{string} should not be available for {string}")
+    public void should_not_be_available_for(String bookTitle, String username) {
+        String match = bookTitle + false + username;
+        assertTrue(bookAvailability.contains(match), bookTitle + " should not be available for " + username);
+        bookAvailability.remove(match);
+    }
+
+    @Then("{string} should be available for {string}")
+    public void should_be_available_for(String bookTitle, String username) {
+        String match = bookTitle + true + username;
+        assertTrue(bookAvailability.contains(match), bookTitle + " should not be available for " + username);
+        bookAvailability.remove(match);
     }
 
     @When("{string} returns {string}")
