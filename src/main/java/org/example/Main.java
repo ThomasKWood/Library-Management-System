@@ -209,15 +209,33 @@ public class Main {
             if (selection == -1 || selection == 2) {
                 return;
             }
-            // perform return: remove from user's list and update book status
-            this.currUser.getBorrowed().remove(returnBook);
-            returnBook.returnBook();
-            this.record.add(returnBook.getTitle()+" returned on " + LocalDateTime.now());
-            // notify first user in hold queue if present
-            if (returnBook.getFirst() != null) {
-                returnBook.getFirst().addNotification(returnBook.getTitle());
+            boolean success = returnBookLogic(returnBook);
+            if (success) {
+                output.println("Return successful. Returning to main menu.");
+                output.flush();
+            } else {
+                output.println("Return failed. Returning to main menu.");
+                output.flush();
             }
         }
+    }
+
+    protected boolean returnBookLogic(Book returnBook) {
+        // handle no books borrowed
+        if (this.currUser.getBorrowed().isEmpty()) {
+            // this is specifically for scenario 4. without this the scenario can not be tested properly given assignment constraints
+            record.add(this.currUser.getUsername() + " attempted return with no books checked out");
+            return false;
+        }
+        // perform return: remove from user's list and update book status
+        this.currUser.getBorrowed().remove(returnBook);
+        returnBook.returnBook();
+        this.record.add(returnBook.getTitle()+" returned on " + LocalDateTime.now());
+        // notify first user in hold queue if present
+        if (returnBook.getFirst() != null) {
+            returnBook.getFirst().addNotification(returnBook.getTitle());
+        }
+        return true;
     }
 
     // show main menu and get user selection
@@ -304,17 +322,13 @@ public class Main {
 
 
             if (bAvailable && uEligible) {
-                // update book: set due date and mark checked out
-                LocalDateTime date = borrowedBook.setDueDateNow();
-                // append to local record log
-                this.record.add(this.currUser.getUsername() + " borrowed " + borrowedBook.getTitle() + " - due " + date.toString());
-                // add to user's borrowed list
-                this.currUser.addBorrowed(borrowedBook);
-                // ask user to acknowledge
-                confirmation(input, output, borrowedBook);
-                // if book was on hold by this user, remove them from the queue
-                if (!borrowedBook.getAvailability()) {
-                    borrowedBook.popFirst();
+                // process borrow
+                boolean success = borrowBookLogic(borrowedBook);
+                if (!success) {
+                    output.println("Borrow failed. Returning to main menu.");
+                    output.flush();
+                    return;
+
                 }
                 // success message
                 output.println("Acknowledged received. Returning to main menu.");
@@ -374,6 +388,34 @@ public class Main {
         }
     }
 
+    protected boolean borrowBookLogic(Book borrowedBook) {
+        boolean bAvailable = checkAvailable(borrowedBook);
+        boolean uEligible = checkEligible();
+
+        // first check if user already has this book checked
+        if (this.currUser.getBorrowed().contains(borrowedBook)) {
+            return false;
+        }
+
+        if (bAvailable && uEligible) {
+            // update book: set due date and mark checked out
+            LocalDateTime date = borrowedBook.setDueDateNow();
+            // append to local record log
+            this.record.add(this.currUser.getUsername() + " borrowed " + borrowedBook.getTitle() + " - due " + date.toString());
+            // add to user's borrowed list
+            this.currUser.addBorrowed(borrowedBook);
+            // if book was on hold by this user, remove them from the queue
+            if (!borrowedBook.getAvailability()) {
+                borrowedBook.popFirst();
+            }
+            return true;
+        } else {
+            // user failed check - shouldn't reach here normally - place hold
+            borrowedBook.placeHold(this.currUser);
+            return false;
+        }
+    }
+
     // process user logout
     public void logout(Scanner input, PrintWriter output) {
         output.println("Are you sure you want to sign out? \n1. Yes\n2. No");
@@ -384,9 +426,25 @@ public class Main {
         }
         output.println("Signing out " + this.currUser.getUsername());
         output.flush();
-        this.currUser = null;
+        boolean sucess = logoutLogic();
+        if (sucess) {
+            output.println("Successfully signed out.");
+            output.flush();
+        } else {
+            output.println("Sign out failed.");
+            output.flush();
+        }
         // after logout immediately prompt for login again
         login(input, output);
+    }
+
+    protected boolean logoutLogic() {
+        if (this.currUser != null) {
+            this.currUser = null;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // process user login
@@ -410,24 +468,12 @@ public class Main {
                 return;
             }
 
-            // basic blank input validation
-            if (usr == null || pass == null || usr.isEmpty() || pass.isEmpty()) {
-                output.println("Username or password cannot be blank.");
+            boolean success = loginLogic(usr, pass);
+            if (success) {
+                output.println("Login successful. Welcome, " + this.currUser.getUsername() + "!");
                 output.flush();
-                login(input, output);
-            }
-            // good thing this isn't algorithms where time complexity matters
-            for (User user : this.users.getUsers()) {
-                if (user.getUsername().equals(usr)) {
-                    if (user.passwordCorrect(pass)) {
-                        setUser(user);
-                        output.println("Welcome " + this.currUser.getUsername());
-                        output.flush();
-                        // after successful login, show notifications
-                        prompt(output);
-                        break;
-                    }
-                }
+
+                prompt(output);
             }
             // this will also print if the username doesn't exist. technically this is more secure
             if (this.currUser == null) {
@@ -439,6 +485,23 @@ public class Main {
             output.println("You are already logged in as: " + this.currUser.getUsername());
             output.flush();
         }
+    }
+
+    protected boolean loginLogic(String usr, String pass) {
+        // basic blank input validation
+        if (usr == null || pass == null || usr.isEmpty() || pass.isEmpty()) {
+            return false;
+        }
+        // good thing this isn't algorithms where time complexity matters
+        for (User user : this.users.getUsers()) {
+            if (user.getUsername().equals(usr)) {
+                if (user.passwordCorrect(pass)) {
+                    setUser(user);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // show notifications for signed-in user

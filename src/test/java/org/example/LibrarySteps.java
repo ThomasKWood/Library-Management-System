@@ -52,11 +52,7 @@ public class LibrarySteps {
             }
         }
 
-        // simulate login with PrintWriter and Scanner
-        String input = username + "\n" + password + "\n"; // User1 login
-        StringReader srInput = new StringReader(input);
-        StringWriter output = new StringWriter();
-        library.login(new Scanner(srInput), new PrintWriter(output));
+        library.loginLogic(username, password);
         // login check
         assertTrue(library.isSignedIn(), "User " + username + " signed in");
     }
@@ -79,14 +75,8 @@ public class LibrarySteps {
 
         Book book = getBookByTitle(bookTitle);
         assertNotNull(book, "Book should not be null: " + bookTitle);
-        int bookIndex = getBookIndex(bookTitle);
 
-        boolean availabilityBefore = book.getAvailability();
-
-        String input = bookIndex + "\n1\n1\n"; // borrow book
-        StringReader srInput = new StringReader(input);
-        StringWriter output = new StringWriter();
-        library.borrow(new Scanner(srInput), new PrintWriter(output));
+        library.borrowBookLogic(book);
 
         if (currentUser.getBorrowed().contains(book)) {
             // book was borrowed good
@@ -106,14 +96,11 @@ public class LibrarySteps {
 
     @When ("{string} logs out")
     public void logs_out(String username) {
-        // check user session matches username
-        userSessionMatches(username);
+        // check their is someone signed in
+        User currentUser = library.getUser();
+        assertNotNull(currentUser, "No user is currently signed in");
 
-        // simulate logout with PrintWriter and Scanner
-        String input = "1\n"; // logout
-        StringReader srInput = new StringReader(input);
-        StringWriter output = new StringWriter();
-        library.logout(new Scanner(srInput), new PrintWriter(output));
+        library.logoutLogic();
         // logout check
         assertFalse(library.isSignedIn(), "User " + username + " should be logged out");
     }
@@ -152,6 +139,10 @@ public class LibrarySteps {
         // check user session matches username
         User currentUser = userSessionMatches(username);
 
+        // book
+        Book returnBook = getBookByTitle(bookTitle);
+        assertNotNull(returnBook, "Book should not be null: " + bookTitle);
+
         int bookIndex = 0;
         if (!currentUser.getBorrowed().isEmpty()) {
             bookIndex = getBorrowedIndex(currentUser, bookTitle);
@@ -159,10 +150,7 @@ public class LibrarySteps {
 
         // handle normal return
         if (bookIndex != 0) {
-            String input = bookIndex + "\n1\n"; // return book
-            StringReader srInput = new StringReader(input);
-            StringWriter output = new StringWriter();
-            library.returnBook(new Scanner(srInput), new PrintWriter(output));
+            library.returnBookLogic(returnBook);
             // return check
             if(currentUser.getBorrowed().contains(getBookByTitle(bookTitle))) {
                 fail(username + " should have returned " + bookTitle);
@@ -172,10 +160,7 @@ public class LibrarySteps {
             // capture borrowed count before
             int borrowedCountBefore = currentUser.getBorrowed().size();
 
-            String input = "21\n1\n"; // return non existing book
-            StringReader srInput = new StringReader(input);
-            StringWriter output = new StringWriter();
-            library.returnBook(new Scanner(srInput), new PrintWriter(output));
+            library.returnBookLogic(returnBook);
 
             if (currentUser.getBorrowed().size() != borrowedCountBefore) {
                 fail(username + " should not have been able to return " + bookTitle);
