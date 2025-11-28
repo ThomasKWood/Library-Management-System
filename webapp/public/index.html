@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library Portal</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Library Portal</h1>
+      <p id="statusMessage" role="status"></p>
+    </header>
+
+    <main>
+      <section id="authSection">
+        <form id="loginForm" data-test="login-form">
+          <h2>Login</h2>
+          <label>
+            Username
+            <input type="text" name="username" required />
+          </label>
+          <label>
+            Password
+            <input type="password" name="password" required />
+          </label>
+          <button type="submit">Sign In</button>
+        </form>
+        <div id="sessionInfo" hidden>
+          <p>Signed in as <span id="currentUser"></span></p>
+          <button id="logoutButton">Logout</button>
+        </div>
+      </section>
+
+      <section id="notifications" hidden>
+        <h2>Notifications</h2>
+        <ul id="notificationList"></ul>
+      </section>
+
+      <section id="borrowedSection" hidden>
+        <h2>My Borrowed Books</h2>
+        <p id="borrowCount"></p>
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Due</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="borrowedTable"></tbody>
+        </table>
+      </section>
+
+      <section id="catalogueSection" hidden>
+        <h2>Catalogue</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Status</th>
+              <th>Due / Hold Position</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="catalogueTable"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
