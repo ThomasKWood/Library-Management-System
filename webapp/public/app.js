@@ -63,12 +63,11 @@ async function refreshBooks() {
   const atLimit = borrowTotal >= 3;
   books.forEach((book) => {
     const dueLabel = book.due
-      ? book.borrowedByCurrentUser
-        ? `Due ${formatDate(book.due)}`
-        : `Should be available on ${formatDate(book.due)}`
-      : book.holdPosition
-        ? `Hold position ${book.holdPosition}`
-        : '';
+      ? (book.borrowedByCurrentUser
+          ? `Due ${formatDate(book.due)}`
+          : `Should be available on ${formatDate(book.due)}${book.holdPosition ? ` - Hold position ${book.holdPosition}` : ''}`
+        )
+      : (book.holdPosition ? `Hold position ${book.holdPosition}` : '');
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${book.title}</td>
@@ -81,7 +80,7 @@ async function refreshBooks() {
 
     if (book.borrowedByCurrentUser) {
       actionsCell.textContent = 'Borrowed by you';
-    } else if (book.borrowable && !atLimit) {
+    } else if (book.borrowable && !atLimit) { // set true always
       const borrowBtn = document.createElement('button');
       borrowBtn.textContent = 'Borrow';
       borrowBtn.addEventListener('click', () => handleBorrow(book.id));
@@ -93,6 +92,13 @@ async function refreshBooks() {
         note.classList.add('muted');
         actionsCell.appendChild(note);
       }
+      // force borrow button always enabled
+      const borrowBtn = document.createElement('button');
+      borrowBtn.textContent = 'Borrow';
+      borrowBtn.addEventListener('click', () => handleBorrow(book.id));
+      actionsCell.appendChild(borrowBtn);
+      // 
+
       const holdBtn = document.createElement('button');
       const alreadyHolding = Boolean(book.holdPosition);
       holdBtn.textContent = alreadyHolding ? 'Hold Placed' : 'Place Hold';

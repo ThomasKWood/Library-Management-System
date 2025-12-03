@@ -128,7 +128,35 @@ Cypress.Commands.add('checkHoldButtonDisabled', (bookName) => {
         .contains('td', bookName)
         .parent()              // move to the row <tr>
         .within(() => {
-            cy.contains('Place Hold').should('be.disabled');
+            cy.contains('Hold Placed').should('be.disabled');
         });
 });
 
+Cypress.Commands.add('checkBorrowedCount', (count) => {
+    cy.get('#borrowCount').should('contain', count + " / 3");
+});
+
+// check notification contains text 
+Cypress.Commands.add('checkNotificationContains', (text) => {
+    cy.get('#notificationList').should('contain', text);
+});
+
+Cypress.Commands.add('checkQueuePosition', (bookName, position) => {
+    cy.get('#catalogueTable tr')
+        .contains('td', bookName)
+        .parent()              // move to the row <tr>
+        .within(() => {
+            cy.contains(`Hold position ${position}`).should('exist');
+        });
+});
+
+Cypress.Commands.add('borrowBookOverLimit', (bookName) => {
+    cy.get('#catalogueTable tr')
+            .contains('td', bookName)
+            .parent()              // move to the row <tr>
+            .within(() => {
+                cy.contains('button', 'Borrow').click();
+            });
+        cy.statusShows('Borrowing limit reached');
+});
+ 
