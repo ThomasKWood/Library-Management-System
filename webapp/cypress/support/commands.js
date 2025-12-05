@@ -69,7 +69,7 @@ Cypress.Commands.add('borrowBook', (bookName, hold) => {
             .contains('td', bookName)
             .parent()              // move to the row <tr>
             .within(() => {
-                cy.contains('Borrow').click();
+                cy.contains('button', 'Borrow').click();
             });
         cy.statusShows('Book borrowed: ' + bookName);
     }
